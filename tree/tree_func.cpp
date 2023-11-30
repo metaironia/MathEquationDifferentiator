@@ -318,24 +318,21 @@ unsigned int TreeNodeVerify (const TreeNode *tree_node_for_verify) {
 
     if (!tree_node_for_verify) {
 
-        errors_in_tree_node |= TREE_NODE_NULL_PTR;
-        LogPrintTreeError ("TREE_NODE_NULL_PTR");
+        TREE_ERROR_SET_AND_PRINT (errors_in_tree_node, TREE_NODE_NULL_PTR);
 
         return errors_in_tree_node;
     }
 
     if (TreeCycledNodeSearch (tree_node_for_verify) == TREE_STATUS_FAIL) {
 
-        errors_in_tree_node |= TREE_CYCLED_NODE;
-        LogPrintTreeError ("TREE_CYCLED_NODE");
+        TREE_ERROR_SET_AND_PRINT (errors_in_tree_node, TREE_CYCLED_NODE);
 
         return errors_in_tree_node;
     }
 
     if (TreeNodeFromPoisonSearch (tree_node_for_verify) == TREE_STATUS_FAIL) {
 
-        errors_in_tree_node |= BRANCH_FROM_POISON;
-        LogPrintTreeError ("BRANCH_FROM_POISON");
+        TREE_ERROR_SET_AND_PRINT (errors_in_tree_node, BRANCH_FROM_POISON);
     }
 
     return errors_in_tree_node;

@@ -10,6 +10,14 @@
                                     }                                    \
                                 }
 
+enum MathNodeOperator {
+
+    OPERATOR_ADD,
+    OPERATOR_SUB,
+    OPERATOR_DIV,
+    OPERATOR_MUL
+};
+
 union MathNodeData {
 
     int mathNodeValue;
@@ -19,8 +27,10 @@ union MathNodeData {
 enum MathNodeType {
 
     NUM,
+    VARIABLE,
     UNARY_OPERATOR,
-    BINARY_OPERATOR
+    BINARY_OPERATOR,
+    NODE_TYPE_ERROR
 };
 
 struct MathNode {

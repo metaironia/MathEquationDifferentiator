@@ -36,6 +36,11 @@
                             }
 
 
+#definy TREE_ERROR_SET_AND_PRINT(tree_errors, current_error)         \
+                            {                                        \
+                                tree_errors |= current_error;        \
+                                LogPrintTreeError (#current_error);  \
+                            }
 
 typedef char* TreeElem_t;
 
