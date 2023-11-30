@@ -26,21 +26,21 @@ TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const int node_va
     return math_tree_node;
 }
 
-MathNodeType IsOperatorUnaryOrBinary (const MathNodeType type_of_node_to_check,
-                                      const MathNodeOperator node_operator_to_check) {
+MathNodeType IsOperatorUnaryOrBinary (const MathNodeOperator node_operator_to_check) {
 
-    switch (type_of_node_check) {
+    switch (node_operator_to_check) {
 
-        case (OPERATOR_ADD):
-        case (OPERATOR_SUB):
-        case (OPERATOR_DIV):
-        case (OPERATOR_MUL):
+        case OPERATOR_ADD:
+        case OPERATOR_SUB:
+        case OPERATOR_DIV:
+        case OPERATOR_MUL:
+        case OPERATOR_POWER:
             return BINARY_OPERATOR;
             break;
 
-        case (OPERATOR_SIN):
-        case (OPERATOR_COS):
-        case (OPERATOR_LN):
+        case OPERATOR_SIN:
+        case OPERATOR_COS:
+        case OPERATOR_LN:
             return UNARY_OPERATOR;
             break;
 
@@ -49,6 +49,19 @@ MathNodeType IsOperatorUnaryOrBinary (const MathNodeType type_of_node_to_check,
     }
 
     return NODE_TYPE_ERROR;
+}
+
+DifferentiatorFuncStatus DerivativeTreeCtor (Tree *derivative_tree_to_create) {
+
+    assert (derivative_tree_to_create);
+
+    TreeCtor (derivative_tree_to_create);
+
+    (derivative_tree_to_create -> root) = FindNodeDerivative (derivative_tree_to_create -> root);
+
+    MATH_TREE_VERIFY (derivative_tree_to_create);
+
+    return DIFF_FUNC_STATUS_OK;
 }
 
 TreeNode *FindNodeDerivative (const TreeNode *math_expression_tree_node) {
@@ -62,8 +75,34 @@ TreeNode *FindNodeDerivative (const TreeNode *math_expression_tree_node) {
     if (math_expression_tree_node -> data -> nodeType == VARIABLE)
         return CreateMathTreeNode (NUMBER, 1, NULL, NULL);
 
-    switch (math_expression_tree_node -> data -> nodeType)
+    switch (math_expression_tree_node -> data -> nodeType) {
 
+        case OPERATOR_ADD:
+            return ADD_ (dL, dR);
+            break;
+
+        case OPERATOR_SUB:
+            return SUB_ (dL, dR);
+            break;
+
+        case OPERATOR_MUL:
+            return ADD_ (MUL_ (dL, cR), MUL_ (cL, dR))
+            break;
+
+        case OPERATOR_DIV:
+            return DIV_ (SUB_ (MUL_ (dL, cR), MUL_ (cL, dR)), POW_ (cR, 2));
+
+        case OPERATOR_POW:
+            return MUL_ (cCUR, ADD_ (MUL_ (dR, LN_ (cL)), MUL_ (cR, LN_ (dL))))
+            break;
+
+        default:
+            LogPrintTreeError ("OPERATOR TO TAKE DERIVATIVE WASN'T FOUND\n");
+            return NULL;
+    }
+
+    assert ("UNKNOWN ERROR WHILE TAKING DERIVATIVE\n" && 0);
+    return NULL;
 }
 
 unsigned int MathTreeVerify (const Tree *math_expression_tree) {

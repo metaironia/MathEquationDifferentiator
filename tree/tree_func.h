@@ -95,7 +95,7 @@ enum TreeErrors {
     TREE_CYCLED_NODE = (1 << 2),
     BRANCH_FROM_POISON = (1 << 3),
     MATH_TREE_BINARY_NO_BRANCH = (1 << 4),
-
+    MATH_TREE_WRONG_NODE_TYPE = (1 << 5)
 };
 
 enum TreeNextBranch {
