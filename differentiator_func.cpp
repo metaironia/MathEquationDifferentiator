@@ -53,15 +53,16 @@ MathNodeType IsOperatorUnaryOrBinary (const MathNodeType type_of_node_to_check,
 
 TreeNode *FindNodeDerivative (const TreeNode *math_expression_tree_node) {
 
-    MATH_TREE_VERIFY (math_expression_tree);
-
     if (!math_expression_tree_node)
-        return DIFF_FUNC_STATUS_OK;
+        return NULL;
 
     if (math_expression_tree_node -> data -> nodeType == NUMBER)
         return CreateMathTreeNode (NUMBER, 0, NULL, NULL);
 
-    if (math_expression_tree_node -> data -> nodeType == V)
+    if (math_expression_tree_node -> data -> nodeType == VARIABLE)
+        return CreateMathTreeNode (NUMBER, 1, NULL, NULL);
+
+    switch (math_expression_tree_node -> data -> nodeType)
 
 }
 
@@ -69,22 +70,44 @@ unsigned int MathTreeVerify (const Tree *math_expression_tree) {
 
     unsigned int errors_math_expression_tree = TreeVerify (math_expression_tree);
 
-    if (NodeNumberFindAndCheck (math_expression_tree -> root))
+    if (NodeNumberFindAndCheckBranches (math_expression_tree -> root))
         TREE_ERROR_SET_AND_PRINT (errors_math_expression_tree, MATH_TREE_NUMBER_WRONG_NO_BRANCH);
 
-    if (NodeBinaryOperatorFindAndCheck (math_expression_tree -> root))
+    if (NodeBinaryOperatorFindAndCheckBranches (math_expression_tree -> root))
         TREE_ERROR_SET_AND_PRINT (errors_math_expression_tree, MATH_TREE_BINARY_OP_WRONG_BRANCH);
 
-    if (NodeUnaryOperatorFindAndCheck (math_expression_tree -> root))
+    if (NodeUnaryOperatorFindAndCheckBranches (math_expression_tree -> root))
         TREE_ERROR_SET_AND_PRINT (errors_math_expression_tree, MATH_TREE_UNARY_OP_WRONG_BRANCHES);
 
-    if (NodeVariableFindAndCheck (math_expression_tree -> root))
+    if (NodeVariableFindAndCheckBranches (math_expression_tree -> root))
         TREE_ERROR_SET_AND_PRINT (errors_math_expression_tree, MATH_TREE_VARIABLE_WRONG_BRANCHES);
+
+    if (NodeFindTypeError (math_expression_tree -> root))
+        TREE_ERROR_SET_AND_PRINT (errors_math_expression_tree, MATH_TREE_WRONG_NODE_TYPE);
 
     return errors_math_expression_tree;
 }
 
-DifferentiatorFuncStatus NodeBinaryOperatorFindAndCheck (const TreeNode *math_expression_node) {
+DifferentiatorFuncStatus NodeFindTypeError (const TreeNode *math_expression_node) {
+
+    if (!math_expression_node)
+        return DIFF_FUNC_STATUS_OK;
+
+    if ((type_of_node != NUMBER && type_of_node != VARIABLE) &&
+        IsOperatorUnaryOrBinary (node_operator) != type_of_node)
+
+       return DIFF_FUNC_STATUS_FAIL;
+
+    if (NodeFindTypeError (math_expression_node -> left_branch)  == DIFF_FUNC_STATUS_FAIL ||
+        NodeFindTypeError (math_expression_node -> right_branch) == DIFF_FUNC_STATUS_FAIL)
+
+        return DIFF_FUNC_STATUS_FAIL;
+
+    return DIFF_FUNC_STATUS_OK;
+}
+
+
+DifferentiatorFuncStatus NodeBinaryOperatorFindAndCheckBranches (const TreeNode *math_expression_node) {
 
     if (!math_expression_node)
         return DIFF_FUNC_STATUS_OK;
@@ -94,15 +117,17 @@ DifferentiatorFuncStatus NodeBinaryOperatorFindAndCheck (const TreeNode *math_ex
 
        return DIFF_FUNC_STATUS_FAIL;
 
-    if (NodeBinaryOperatorFindAndCheck (math_expression_node -> left_branch)  == DIFF_FUNC_STATUS_FAIL ||
-        NodeBinaryOperatorFindAndCheck (math_expression_node -> right_branch) == DIFF_FUNC_STATUS_FAIL)
+    if (NodeBinaryOperatorFindAndCheckBranches (math_expression_node -> left_branch)
+                                                                        == DIFF_FUNC_STATUS_FAIL ||
+        NodeBinaryOperatorFindAndCheckBranches (math_expression_node -> right_branch)
+                                                                        == DIFF_FUNC_STATUS_FAIL)
 
         return DIFF_FUNC_STATUS_FAIL;
 
     return DIFF_FUNC_STATUS_OK;
 }
 
-DifferentiatorFuncStatus NodeUnaryOperatorFindAndCheck (const TreeNode *math_expression_node) {
+DifferentiatorFuncStatus NodeUnaryOperatorFindAndCheckBranches (const TreeNode *math_expression_node) {
 
     if (!math_expression_node)
         return DIFF_FUNC_STATUS_OK;
@@ -112,15 +137,17 @@ DifferentiatorFuncStatus NodeUnaryOperatorFindAndCheck (const TreeNode *math_exp
 
        return DIFF_FUNC_STATUS_FAIL;
 
-    if (NodeUnaryOperatorFindAndCheck (math_expression_node -> left_branch)  == DIFF_FUNC_STATUS_FAIL ||
-        NodeUnaryOperatorFindAndCheck (math_expression_node -> right_branch) == DIFF_FUNC_STATUS_FAIL)
+        if (NodeUnaryOperatorFindAndCheckBranches (math_expression_node -> left_branch)
+                                                                        == DIFF_FUNC_STATUS_FAIL ||
+            NodeUnaryOperatorFindAndCheckBranches (math_expression_node -> right_branch)
+                                                                        == DIFF_FUNC_STATUS_FAIL)
 
         return DIFF_FUNC_STATUS_FAIL;
 
     return DIFF_FUNC_STATUS_OK;
 }
 
-DifferentiatorFuncStatus NodeVariableFindAndCheck (const TreeNode *math_expression_node) {
+DifferentiatorFuncStatus NodeVariableFindAndCheckBranches (const TreeNode *math_expression_node) {
 
     if (!math_expression_node)
         return DIFF_FUNC_STATUS_OK;
@@ -130,15 +157,15 @@ DifferentiatorFuncStatus NodeVariableFindAndCheck (const TreeNode *math_expressi
 
        return DIFF_FUNC_STATUS_FAIL;
 
-    if (NodeVariableFindAndCheck (math_expression_node -> left_branch)  == DIFF_FUNC_STATUS_FAIL ||
-        NodeVariableFindAndCheck (math_expression_node -> right_branch) == DIFF_FUNC_STATUS_FAIL)
+    if (NodeVariableFindAndCheckBranches (math_expression_node -> left_branch)  == DIFF_FUNC_STATUS_FAIL ||
+        NodeVariableFindAndCheckBranches (math_expression_node -> right_branch) == DIFF_FUNC_STATUS_FAIL)
 
         return DIFF_FUNC_STATUS_FAIL;
 
     return DIFF_FUNC_STATUS_OK;
 }
 
-DifferentiatorFuncStatus NodeNumberFindAndCheck (const TreeNode *math_expression_node) {
+DifferentiatorFuncStatus NodeNumberFindAndCheckBranches (const TreeNode *math_expression_node) {
 
     if (!math_expression_node)
         return DIFF_FUNC_STATUS_OK;
@@ -148,8 +175,8 @@ DifferentiatorFuncStatus NodeNumberFindAndCheck (const TreeNode *math_expression
 
        return DIFF_FUNC_STATUS_FAIL;
 
-    if (NodeNumberFindAndCheck (math_expression_node -> left_branch)  == DIFF_FUNC_STATUS_FAIL ||
-        NodeNumberFindAndCheck (math_expression_node -> right_branch) == DIFF_FUNC_STATUS_FAIL)
+    if (NodeNumberFindAndCheckBranches (math_expression_node -> left_branch)  == DIFF_FUNC_STATUS_FAIL ||
+        NodeNumberFindAndCheckBranches (math_expression_node -> right_branch) == DIFF_FUNC_STATUS_FAIL)
 
         return DIFF_FUNC_STATUS_FAIL;
 
