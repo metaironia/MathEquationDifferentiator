@@ -35,5 +35,8 @@ enum TreeFuncStatus TreeDotFileCreateElements (FILE *tree_dot_file_gen_elems,
 enum TreeFuncStatus TreeDotFileDrawArrows (FILE *tree_dot_file_draw,
                                            const TreeNode *tree_node_for_draw_arrows);
 
+enum TreeFuncStatus TreeDotFileSetColorElement (FILE *tree_dot_file_elem_for_set_color,
+                                                const TreeNode *tree_node_for_set_color);
+
 
 #endif

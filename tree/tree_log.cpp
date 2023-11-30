@@ -73,6 +73,26 @@ enum TreeFuncStatus TreeDotFileEnd (FILE *tree_dot_file_end) {
     return TREE_STATUS_OK;
 }
 
+enum TreeFuncStatus TreeDotFileSetColorElement (FILE *tree_dot_file_elem_for_set_color,
+                                                const TreeNode *tree_node_for_set_color) {
+
+    assert (tree_dot_file_elem_for_color);
+
+    if (tree_node_for_set_color -> data -> nodeType == NUMBER)
+        LOG_PRINT (tree_dot_file_elem_for_set_color, "fillcolor = orange, ");
+
+    else if (tree_node_for_set_color -> data -> nodeType == VARIABLE)
+        LOG_PRINT (tree_dot_file_elem_for_set_color, "fillcolor = blue, ");
+
+    else if (tree_node_for_set_color -> data -> nodeType == NODE_TYPE_ERROR)
+        LOG_PRINT (tree_dot_file_elem_for_set_color, "fillcolor = red, ");
+
+    else
+        LOG_PRINT (tree_dot_file_elem_for_set_color, "fillcolor = lightgreen, ");
+
+    return TREE_STATUS_OK;
+}
+
 enum TreeFuncStatus TreeDotFileCreateElements (FILE *tree_dot_file_gen_elems,
                                                const TreeNode *tree_node_for_gen_elems) {
 
@@ -80,9 +100,14 @@ enum TreeFuncStatus TreeDotFileCreateElements (FILE *tree_dot_file_gen_elems,
 
     if (tree_node_for_gen_elems) {
 
+        if (tree_node_for_gen_elems)
+
         LOG_PRINT (tree_dot_file_gen_elems, NODE_START_SYMBOL "%llx [shape=record, "
-                                            "style = filled, fillcolor = lightgreen, "
-                                            "fontsize = 16, fontname = \"times bold\", "
+                                            "style = filled, ")
+
+        TreeDotFileSetColorElement (tree_dot_file_gen_elems, tree_node_for_gen_elems);
+
+        LOG_PRINT (tree_dot_file_gen_elems, "fontsize = 16, fontname = \"times bold\", "
                                             "label=\"" TREE_DATA_FORMAT "\"];\n",
                                             (size_t) (tree_node_for_gen_elems),
                                             tree_node_for_gen_elems -> data);
