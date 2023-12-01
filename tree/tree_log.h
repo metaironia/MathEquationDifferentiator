@@ -7,10 +7,6 @@
 
 #define NODE_START_SYMBOL       "A"
 
-#ifndef TREE_DATA_FORMAT
-    #define TREE_DATA_FORMAT    "%s"
-#endif
-
 #define LOG_PRINT(LOG_FILE, ...)  do {                                \
                                       fprintf(LOG_FILE, __VA_ARGS__); \
                                       fflush (LOG_FILE);              \

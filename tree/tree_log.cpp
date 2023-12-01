@@ -2,6 +2,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#include "../differentiator_func.h"
+
 #include "tree_log.h"
 #include "tree_func.h"
 
@@ -49,6 +51,9 @@ enum TreeFuncStatus TreeGraphDump (const Tree *tree_for_graph_dump) {
     TreeDotFileDrawArrows     (tree_dot_file, tree_for_graph_dump -> root);
 
     TreeDotFileEnd (tree_dot_file);
+fprintf (stderr, "treegraph start");
+//    system ("dot math_tree.dot -T png -o math_tree_img.png");
+//    system ("math_tree_img.png");
 
     return TREE_STATUS_OK;
 }
@@ -76,7 +81,12 @@ enum TreeFuncStatus TreeDotFileEnd (FILE *tree_dot_file_end) {
 enum TreeFuncStatus TreeDotFileSetColorElement (FILE *tree_dot_file_elem_for_set_color,
                                                 const TreeNode *tree_node_for_set_color) {
 
-    assert (tree_dot_file_elem_for_color);
+    assert (tree_dot_file_elem_for_set_color);
+
+    assert (tree_node_for_set_color);
+    assert (tree_node_for_set_color -> data);
+
+fprintf (stderr, "tree_node_for_set_color");
 
     if (tree_node_for_set_color -> data -> nodeType == NUMBER)
         LOG_PRINT (tree_dot_file_elem_for_set_color, "fillcolor = orange, ");
@@ -103,14 +113,14 @@ enum TreeFuncStatus TreeDotFileCreateElements (FILE *tree_dot_file_gen_elems,
         if (tree_node_for_gen_elems)
 
         LOG_PRINT (tree_dot_file_gen_elems, NODE_START_SYMBOL "%llx [shape=record, "
-                                            "style = filled, ")
+                                            "style = filled, ",
+                                            (size_t) (tree_node_for_gen_elems));
 
         TreeDotFileSetColorElement (tree_dot_file_gen_elems, tree_node_for_gen_elems);
 
         LOG_PRINT (tree_dot_file_gen_elems, "fontsize = 16, fontname = \"times bold\", "
-                                            "label=\"" TREE_DATA_FORMAT "\"];\n",
-                                            (size_t) (tree_node_for_gen_elems),
-                                            tree_node_for_gen_elems -> data);
+                                            "label = \"%s\"];\n",
+                                            MathNodeTypeFind (tree_node_for_gen_elems));
 
         TreeDotFileCreateElements (tree_dot_file_gen_elems, tree_node_for_gen_elems -> left_branch);
         TreeDotFileCreateElements (tree_dot_file_gen_elems, tree_node_for_gen_elems -> right_branch);

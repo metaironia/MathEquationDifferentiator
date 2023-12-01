@@ -1,7 +1,7 @@
 #ifndef TREE_FUNC_H
 #define TREE_FUNC_H
 
-
+#include "../math_tree_node_data.h"
 #include "../stack/my_stack_func.h"
 
 #define NIL                     "nil"
@@ -36,13 +36,13 @@
                             }
 
 
-#definy TREE_ERROR_SET_AND_PRINT(tree_errors, current_error)         \
+#define TREE_ERROR_SET_AND_PRINT(tree_errors, current_error)         \
                             {                                        \
                                 tree_errors |= current_error;        \
                                 LogPrintTreeError (#current_error);  \
                             }
 
-typedef char* TreeElem_t;
+typedef MathNode* TreeElem_t;
 
 #define IS_TREE_ELEM_STRING 1
 
@@ -94,8 +94,11 @@ enum TreeErrors {
     TREE_NODE_NULL_PTR = (1 << 1),
     TREE_CYCLED_NODE = (1 << 2),
     BRANCH_FROM_POISON = (1 << 3),
-    MATH_TREE_BINARY_NO_BRANCH = (1 << 4),
-    MATH_TREE_WRONG_NODE_TYPE = (1 << 5)
+    MATH_TREE_NUMBER_HAVE_BRANCH = (1 << 4),
+    MATH_TREE_BINARY_OP_WRONG_BRANCH = (1 << 5),
+    MATH_TREE_UNARY_OP_WRONG_BRANCHES = (1 << 6),
+    MATH_TREE_VARIABLE_HAVE_BRANCHES = (1 << 7),
+    MATH_TREE_WRONG_NODE_TYPE = (1 << 8)
 };
 
 enum TreeNextBranch {
@@ -113,29 +116,29 @@ enum TreeFuncStatus TreeNodeLeftBranchCreate (TreeNode *node_for_add_left_branch
 
 enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_branch);
 
-enum TreeFuncStatus TreeReadFromFile (FILE *file_with_tree, Tree *tree_for_fill);
+//enum TreeFuncStatus TreeReadFromFile (FILE *file_with_tree, Tree *tree_for_fill);
 
-enum TreeFuncStatus TreeNodeRead (FILE *file_for_read_tree, TreeNode **tree_node_for_fill);
+//enum TreeFuncStatus TreeNodeRead (FILE *file_for_read_tree, TreeNode **tree_node_for_fill);
 
-enum TreeFuncStatus TreeNodeNilCheck (FILE *file_for_node_nil_check, char *buffer_for_node_check);
+//enum TreeFuncStatus TreeNodeNilCheck (FILE *file_for_node_nil_check, char *buffer_for_node_check);
 
-enum TreeFuncStatus TreeNodeDataRead (FILE *file_for_read_node_data, TreeNode *tree_node_for_data_read,
-                                      char *buffer_for_read_node_data);
+//enum TreeFuncStatus TreeNodeDataRead (FILE *file_for_read_node_data, TreeNode *tree_node_for_data_read,
+//                                      char *buffer_for_read_node_data);
 
-enum TreeFuncStatus TreeOutputToFile (FILE *file_for_output_tree, const Tree *tree_for_output);
+//enum TreeFuncStatus TreeOutputToFile (FILE *file_for_output_tree, const Tree *tree_for_output);
 
-enum TreeFuncStatus TreeNodeOutputToFile (FILE *file_for_output_node,
-                                          const TreeNode *tree_node_for_output);
+//enum TreeFuncStatus TreeNodeOutputToFile (FILE *file_for_output_node,
+//                                          const TreeNode *tree_node_for_output);
 
-enum TreeFuncStatus TreeElementFind (const Tree *tree_for_element_find, const TreeElem_t tree_data_to_find,
-                                     Stack *stack_tree_path);
+//enum TreeFuncStatus TreeElementFind (const Tree *tree_for_element_find, const TreeElem_t tree_data_to_find,
+//                                     Stack *stack_tree_path);
 
-enum TreeFuncStatus TreeNodeElementFind (const TreeNode *tree_node_for_element_find,
-                                         const TreeElem_t tree_node_data_to_find,
-                                         Stack *stack_tree_node_path);
+//enum TreeFuncStatus TreeNodeElementFind (const TreeNode *tree_node_for_element_find,
+//                                         const TreeElem_t tree_node_data_to_find,
+//                                         Stack *stack_tree_node_path);
 
-enum TreeFuncStatus TreeCompareData (const TreeNode *tree_node_for_cmp_data,
-                                     const TreeElem_t data_to_cmp);
+//enum TreeFuncStatus TreeCompareData (const TreeNode *tree_node_for_cmp_data,
+//                                     const TreeElem_t data_to_cmp);
 
 enum TreeFuncStatus TreeCycledNodeSearch (const TreeNode *tree_node_for_cycle_search);
 
