@@ -1,13 +1,48 @@
 #include <assert.h>
+#include <string.h>
 
 #include "../stack/my_stack_func.h"
 
 #include "tree_func.h"
 #include "tree_log.h"
 
+Tree *MathTreeCopy (const Tree *math_tree_for_copy,
+                    Tree *copy_of_math_tree) {
+
+    assert (math_tree_for_copy);
+    assert (copy_of_math_tree);
+
+    memset (copy_of_math_tree, 0, sizeof (Tree));
+
+    TreeCtor (copy_of_math_tree);
+
+    return MathTreeNodeCopy (math_tree_node_for_copy -> root);
+}
+
+TreeNode *MathTreeNodeCopy (const TreeNode *math_tree_node_for_copy) {
+
+    if (!math_tree_node_for_copy)
+        return NULL;
+
+    TreeNode *copy_of_math_tree_node = (TreeNode *) calloc (1, sizeof (TreeNode));
+    assert (copy_of_math_tree_node);
+
+    memcpy (copy_of_math_tree_node, math_tree_node_for_copy, sizeof (TreeNode));
+
+    MathTreeNodeDataCopy (copy_of_math_tree_node, math_tree_node_for_copy);
+
+    (copy_of_math_tree_node -> left_branch) =
+                                CreateCopyOfMathTreeNode (math_tree_node_for_copy -> left_branch);
+
+    (copy_of_math_tree_node -> right_branch) =
+                                CreateCopyOfMathTreeNode (math_tree_node_for_copy -> right_branch);
+
+    return copy_of_math_tree_node;
+}
+
 TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const int node_value,
-                              const TreeNode *const ptr_left_branch,
-                              const TreeNode *const ptr_right_branch) {
+                              TreeNode *const ptr_left_branch,
+                              TreeNode *const ptr_right_branch) {
 
     TreeNode *math_tree_node = CreateTreeNode ();
     assert (math_tree_node);
@@ -22,6 +57,9 @@ TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const int node_va
 
     math_tree_node -> data -> nodeType = type_of_node;
     math_tree_node -> data -> nodeValue = node_value;
+
+    math_tree_node -> left_branch = ptr_left_branch;
+    math_tree_node -> right_branch = ptr_right_branch;
 
     return math_tree_node;
 }
