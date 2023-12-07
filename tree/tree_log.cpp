@@ -53,7 +53,16 @@ enum TreeFuncStatus MathTreeGraphDump (const Tree *tree_for_graph_dump) {
 
     TreeDotFileEnd (tree_dot_file);
 
+    TreeImageFolderCreate ();
+
     TreeImageCreate (tree_dot_file);
+
+    return TREE_STATUS_OK;
+}
+
+enum TreeFuncStatus TreeImageFolderCreate (void) {
+
+    system ("mkdir \images");
 
     return TREE_STATUS_OK;
 }
@@ -87,7 +96,7 @@ const char *CommandToCreateImageCreate (const char *image_name) {
 
     memset (command_to_create_image, 0, MAX_COMMAND_LENGTH + 1);
 
-    sprintf (command_to_create_image, "dot tree_dot_dump.dot -T png -o %s", image_name);
+    sprintf (command_to_create_image, "dot tree_dot_dump.dot -T png -o images\\%s", image_name);
 
     return command_to_create_image;
 }

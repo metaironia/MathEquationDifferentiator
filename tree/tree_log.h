@@ -32,8 +32,7 @@ enum TreeFuncStatus LogPrintTreeError (const char *error_text);
 
 enum TreeFuncStatus MathTreeGraphDump (const Tree *tree_for_graph_dump);
 
-TreeFuncStatus MathNodeTypePrint (FILE *file_for_print,
-                                  const TreeNode *math_tree_node_for_type_find);
+enum TreeFuncStatus TreeImageFolderCreate (void);
 
 enum TreeFuncStatus TreeDotFileBegin (FILE *tree_dot_file_begin);
 
@@ -41,6 +40,9 @@ enum TreeFuncStatus TreeDotFileEnd (FILE *tree_dot_file_end);
 
 enum TreeFuncStatus TreeDotFileCreateElements (FILE *tree_dot_file_gen_elems,
                                                const TreeNode *tree_node_for_gen_elems);
+
+TreeFuncStatus MathNodeTypePrint (FILE *file_for_print,
+                                  const TreeNode *math_tree_node_for_type_find);
 
 enum TreeFuncStatus TreeDotFileDrawArrows (FILE *tree_dot_file_draw,
                                            const TreeNode *tree_node_for_draw_arrows);
