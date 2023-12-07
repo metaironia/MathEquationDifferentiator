@@ -9,6 +9,7 @@
 #include "tree_func.h"
 #include "tree_log.h"
 
+extern FILE *TREE_LOG_FILE;
 
 enum TreeFuncStatus TreeCtor (Tree *tree_to_create) {
 
@@ -293,14 +294,17 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //    return TREE_STATUS_FAIL;
 //}
 
-unsigned int TreeVerify (const Tree *tree_for_verify) {      //TODO fix copypaste in verifier
+unsigned int TreeVerify (const Tree *tree_for_verify, const char *name_parent_func) {      //TODO fix copypaste in verifier
+
+    assert (name_parent_func);
 
     unsigned int errors_in_tree = 0;
 
+    LOG_PRINT (TREE_LOG_FILE, "From function %s:\n", name_parent_func);
+
     if (!tree_for_verify) {
 
-        errors_in_tree |= TREE_NULL_PTR;
-        LogPrintTreeError ("TREE_NULL_PTR");
+        TREE_ERROR_SET_AND_PRINT (errors_in_tree, TREE_NULL_PTR);
 
         return errors_in_tree;
     }
@@ -308,6 +312,9 @@ unsigned int TreeVerify (const Tree *tree_for_verify) {      //TODO fix copypast
     TreeNode *root_node = tree_for_verify -> root;
 
     errors_in_tree |= TreeNodeVerify (root_node);
+
+    if (errors_in_tree == 0)
+        LOG_PRINT (TREE_LOG_FILE, "No errors.\n");
 
     return errors_in_tree;
 }
@@ -323,17 +330,19 @@ unsigned int TreeNodeVerify (const TreeNode *tree_node_for_verify) {
         return errors_in_tree_node;
     }
 
-    if (TreeCycledNodeSearch (tree_node_for_verify) == TREE_STATUS_FAIL) {
-
+    if (TreeCycledNodeSearch (tree_node_for_verify) == TREE_STATUS_FAIL)
         TREE_ERROR_SET_AND_PRINT (errors_in_tree_node, TREE_CYCLED_NODE);
+
+    if (!(tree_node_for_verify -> data) &&
+        ((tree_node_for_verify -> left_branch != NULL) || (tree_node_for_verify -> right_branch != NULL))) {
+
+        TREE_ERROR_SET_AND_PRINT (errors_in_tree_node, TREE_NODE_DATA_NULL_PTR);
 
         return errors_in_tree_node;
     }
 
-    if (TreeNodeFromPoisonSearch (tree_node_for_verify) == TREE_STATUS_FAIL) {
-
+    if (TreeNodeFromPoisonSearch (tree_node_for_verify) == TREE_STATUS_FAIL)
         TREE_ERROR_SET_AND_PRINT (errors_in_tree_node, BRANCH_FROM_POISON);
-    }
 
     return errors_in_tree_node;
 }
