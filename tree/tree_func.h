@@ -1,8 +1,9 @@
 #ifndef TREE_FUNC_H
 #define TREE_FUNC_H
 
-#include "../math_tree_node_data.h"
 #include "../stack/my_stack_func.h"
+#include "math_tree/math_tree_node_data.h"
+
 
 #define NIL                     "nil"
 

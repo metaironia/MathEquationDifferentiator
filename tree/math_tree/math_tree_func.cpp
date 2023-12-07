@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "math_tree_node_data.h"
 #include "../tree_func.h"
 #include "../tree_log.h"
 
@@ -122,7 +123,7 @@ const char *MathNodeNumOrVarToString (const TreeNode *math_tree_node) {
     switch (node_type) {
 
         case NUMBER:
-            return "NUMBER";
+            return NumberToString ((math_tree_node -> data -> nodeValue).mathNodeValue);
             break;
 
         case VARIABLE:
@@ -134,6 +135,17 @@ const char *MathNodeNumOrVarToString (const TreeNode *math_tree_node) {
     }
 
     return NULL;
+}
+
+const char *NumberToString (const long long number) {
+
+    static char number_to_string[MAX_NUMBER_LENGTH + 1] = {};
+
+    memset (number_to_string, 0, MAX_NUMBER_LENGTH + 1);
+
+    sprintf (number_to_string, "%lld", number);
+
+    return number_to_string;
 }
 
 const char *MathNodeOperatorToString (const TreeNode *math_tree_node) {

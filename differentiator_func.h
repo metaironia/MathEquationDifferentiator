@@ -3,7 +3,7 @@
 
 
 #include "tree/tree_func.h"
-#include "math_tree_node_data.h"
+#include "tree/math_tree/math_tree_node_data.h"
 
 #define NAME_OF_VAR(x)          #x
 

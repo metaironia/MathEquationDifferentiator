@@ -1,6 +1,7 @@
 #ifndef MATH_TREE_FUNC_H
 #define MATH_TREE_FUNC_H
 
+#include "math_tree_node_data.h"
 #include "../tree_func.h"
 
 #define MATH_TREE_VERIFY(math_tree)                                                     \
@@ -33,9 +34,9 @@
                                     }                                             \
                                 }
 
-MathNodeType IsOperatorUnaryOrBinary (const MathNodeOperator node_operator_to_check);
+const int MAX_NUMBER_LENGTH = 30;
 
-const char *MathNodeTypeFind (const TreeNode *math_tree_node_for_type_find);
+MathNodeType IsOperatorUnaryOrBinary (const MathNodeOperator node_operator_to_check);
 
 Tree *MathTreeCopy (const Tree *math_tree_for_copy, Tree *copy_of_math_tree);
 
@@ -62,7 +63,11 @@ unsigned int NodeVariableCheckErrors (const TreeNode *math_expression_node);
 
 unsigned int NodeNumberCheckErrors (const TreeNode *math_expression_node);
 
+const char *NumberToString (const long long number);
+
 const char *MathNodeTypeToString (const TreeNode *math_tree_node);
+
+const char *MathNodeTypeFind (const TreeNode *math_tree_node_for_type_find);
 
 const char *MathNodeNumOrVarToString (const TreeNode *math_tree_node);
 

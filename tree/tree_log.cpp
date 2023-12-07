@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <assert.h>
-#include <stdlib.h>
+#include <string.h>
 
+#include "math_tree/math_tree_node_data.h"
 #include "math_tree/math_tree_func.h"
 
 #include "tree_log.h"
@@ -44,20 +45,51 @@ enum TreeFuncStatus MathTreeGraphDump (const Tree *tree_for_graph_dump) {
 
     FILE *tree_dot_file = fopen (TREE_DOT_FILE_NAME, "w");
     assert (tree_dot_file);
-fprintf(stderr, "gde file?");
-fprintf (stderr, "gde rec1?");
+
     TreeDotFileBegin (tree_dot_file);
-fprintf (stderr, "gde rec2?");
 
     TreeDotFileCreateElements (tree_dot_file, tree_for_graph_dump -> root);
     TreeDotFileDrawArrows     (tree_dot_file, tree_for_graph_dump -> root);
 
     TreeDotFileEnd (tree_dot_file);
-fprintf (stderr, "treegraph start");
-//    system ("dot math_tree.dot -T png -o math_tree_img.png");
-//    system ("math_tree_img.png");
+
+    TreeImageCreate (tree_dot_file);
 
     return TREE_STATUS_OK;
+}
+
+enum TreeFuncStatus TreeImageCreate (FILE *tree_dot_file) {
+
+    assert (tree_dot_file);
+
+    system (CommandToCreateImageCreate (ImageNameCreate ()));
+
+    return TREE_STATUS_OK;
+}
+
+const char *ImageNameCreate (void) {
+
+    static int image_number = 0;
+    static char image_name[MAX_IMAGE_NAME_LENGTH + 1] = {};
+
+    memset (image_name, 0, MAX_IMAGE_NAME_LENGTH + 1);
+
+    sprintf (image_name, "math_tree_img_%d.png", image_number++);
+
+    return image_name;
+}
+
+const char *CommandToCreateImageCreate (const char *image_name) {
+
+    assert (image_name);
+
+    static char command_to_create_image[MAX_COMMAND_LENGTH + 1] = {};
+
+    memset (command_to_create_image, 0, MAX_COMMAND_LENGTH + 1);
+
+    sprintf (command_to_create_image, "dot tree_dot_dump.dot -T png -o %s", image_name);
+
+    return command_to_create_image;
 }
 
 enum TreeFuncStatus TreeDotFileBegin (FILE *tree_dot_file_begin) {
@@ -85,8 +117,6 @@ enum TreeFuncStatus TreeDotFileSetColorElement (FILE *tree_dot_file_elem_for_set
 
     assert (tree_dot_file_elem_for_set_color);
     assert (tree_node_for_set_color -> data);
-
-fprintf (stderr, "tree_node_for_set_color");
 
     if (tree_node_for_set_color -> data -> nodeType == NUMBER)
         LOG_PRINT (tree_dot_file_elem_for_set_color, "fillcolor = orange, ");
