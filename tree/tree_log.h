@@ -3,15 +3,23 @@
 
 #include "tree_func.h"
 
-#define TREE_DOT_FILE_NAME      "tree_dot_dump.dot"
+#define TREE_DOT_FILE_NAME             "tree_dot_dump.dot"
 
-#define NODE_START_SYMBOL       "A"
+#define NODE_START_SYMBOL              "A"
 
-#define LOG_PRINT(LOG_FILE, ...)  do {                                \
-                                      fprintf(LOG_FILE, __VA_ARGS__); \
-                                      fflush (LOG_FILE);              \
-                                                                      \
-                                  } while (0)
+#define LOG_PRINT_TREE_ERROR(error)    LogPrintTreeError (error)
+
+#define LOG_PRINT(LOG_FILE, ...)       do {                                \
+                                           fprintf(LOG_FILE, __VA_ARGS__); \
+                                           fflush (LOG_FILE);              \
+                                                                           \
+                                       } while (0)
+
+#define TREE_ERROR_SET_AND_PRINT(tree_errors, current_error)                      \
+                                      {                                           \
+                                          tree_errors |= current_error;           \
+                                          LOG_PRINT_TREE_ERROR (#current_error);  \
+                                      }
 
 FILE *CreateLogFile (const char *log_file_name);
 
@@ -19,7 +27,10 @@ void CloseLogFile (void);
 
 enum TreeFuncStatus LogPrintTreeError (const char *error_text);
 
-enum TreeFuncStatus TreeGraphDump (const Tree *tree_for_graph_dump);
+enum TreeFuncStatus MathTreeGraphDump (const Tree *tree_for_graph_dump);
+
+TreeFuncStatus MathNodeTypePrint (FILE *file_for_print,
+                                  const TreeNode *math_tree_node_for_type_find);
 
 enum TreeFuncStatus TreeDotFileBegin (FILE *tree_dot_file_begin);
 

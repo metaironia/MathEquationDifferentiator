@@ -20,26 +20,19 @@
     #define ON_TREE_DEBUG(...)
 #endif
 
-#define TREE_VERIFY(tree)   {                                        \
-                                if (TreeVerify (tree) != 0) {        \
-                                                                     \
-                                    TreeGraphDump (tree);            \
-                                                                     \
-                                    return TREE_STATUS_FAIL;         \
-                                }                                    \
+#define TREE_VERIFY(tree)   {                                                   \
+                                if (TreeVerify (tree, __func__) != 0) {         \
+                                                                                \
+                                    MathTreeGraphDump (tree);                   \
+                                                                                \
+                                    return TREE_STATUS_FAIL;                    \
+                                }                                               \
                             }
 
 #define TREE_NODE_VERIFY(tree_node)                                  \
                             {                                        \
                                 if (TreeNodeVerify (tree_node) != 0) \
                                     return TREE_STATUS_FAIL;         \
-                            }
-
-
-#define TREE_ERROR_SET_AND_PRINT(tree_errors, current_error)         \
-                            {                                        \
-                                tree_errors |= current_error;        \
-                                LogPrintTreeError (#current_error);  \
                             }
 
 typedef MathNode* TreeElem_t;
@@ -92,13 +85,14 @@ enum TreeErrors {
 
     TREE_NULL_PTR = (1 << 0),
     TREE_NODE_NULL_PTR = (1 << 1),
-    TREE_CYCLED_NODE = (1 << 2),
-    BRANCH_FROM_POISON = (1 << 3),
-    MATH_TREE_NUMBER_HAVE_BRANCH = (1 << 4),
-    MATH_TREE_BINARY_OP_WRONG_BRANCH = (1 << 5),
-    MATH_TREE_UNARY_OP_WRONG_BRANCHES = (1 << 6),
-    MATH_TREE_VARIABLE_HAVE_BRANCHES = (1 << 7),
-    MATH_TREE_WRONG_NODE_TYPE = (1 << 8)
+    TREE_NODE_DATA_NULL_PTR = (1 << 2),
+    TREE_CYCLED_NODE = (1 << 3),
+    BRANCH_FROM_POISON = (1 << 4),
+    MATH_TREE_NUMBER_HAVE_BRANCH = (1 << 5),
+    MATH_TREE_BINARY_OP_WRONG_BRANCH = (1 << 6),
+    MATH_TREE_UNARY_OP_WRONG_BRANCHES = (1 << 7),
+    MATH_TREE_VARIABLE_HAVE_BRANCHES = (1 << 8),
+    MATH_TREE_WRONG_NODE_TYPE = (1 << 9)
 };
 
 enum TreeNextBranch {
@@ -150,7 +144,7 @@ enum TreeFuncStatus TreeDestruct (Tree *tree_for_destruct);
 
 bool IsBracketInFileStr (FILE *file_to_check_str, const char bracket_type);
 
-unsigned int TreeVerify (const Tree *tree_for_verify);
+unsigned int TreeVerify (const Tree *tree_for_verify, const char *name_parent_func);
 
 unsigned int TreeNodeVerify (const TreeNode *tree_node_for_verify);
 

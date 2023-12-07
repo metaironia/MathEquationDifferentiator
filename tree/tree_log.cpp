@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "../differentiator_func.h"
+#include "math_tree/math_tree_func.h"
 
 #include "tree_log.h"
 #include "tree_func.h"
@@ -33,19 +33,21 @@ enum TreeFuncStatus LogPrintTreeError (const char *error_text) {
 
     assert (error_text);
 
-    LOG_PRINT (TREE_LOG_FILE, "An error %s occurred. \n", error_text);
+    LOG_PRINT (TREE_LOG_FILE, "An error %s occurred.\n ", error_text);
 
     return TREE_STATUS_OK;
 }
 
-enum TreeFuncStatus TreeGraphDump (const Tree *tree_for_graph_dump) {
+enum TreeFuncStatus MathTreeGraphDump (const Tree *tree_for_graph_dump) {
 
     assert (tree_for_graph_dump);
 
     FILE *tree_dot_file = fopen (TREE_DOT_FILE_NAME, "w");
     assert (tree_dot_file);
-
+fprintf(stderr, "gde file?");
+fprintf (stderr, "gde rec1?");
     TreeDotFileBegin (tree_dot_file);
+fprintf (stderr, "gde rec2?");
 
     TreeDotFileCreateElements (tree_dot_file, tree_for_graph_dump -> root);
     TreeDotFileDrawArrows     (tree_dot_file, tree_for_graph_dump -> root);
@@ -82,8 +84,6 @@ enum TreeFuncStatus TreeDotFileSetColorElement (FILE *tree_dot_file_elem_for_set
                                                 const TreeNode *tree_node_for_set_color) {
 
     assert (tree_dot_file_elem_for_set_color);
-
-    assert (tree_node_for_set_color);
     assert (tree_node_for_set_color -> data);
 
 fprintf (stderr, "tree_node_for_set_color");
@@ -119,8 +119,11 @@ enum TreeFuncStatus TreeDotFileCreateElements (FILE *tree_dot_file_gen_elems,
         TreeDotFileSetColorElement (tree_dot_file_gen_elems, tree_node_for_gen_elems);
 
         LOG_PRINT (tree_dot_file_gen_elems, "fontsize = 16, fontname = \"times bold\", "
-                                            "label = \"%s\"];\n",
-                                            MathNodeTypeFind (tree_node_for_gen_elems));
+                                            "label = \"");
+
+        MathNodeTypePrint (tree_dot_file_gen_elems, tree_node_for_gen_elems);
+
+        LOG_PRINT (tree_dot_file_gen_elems, "\"];\n");
 
         TreeDotFileCreateElements (tree_dot_file_gen_elems, tree_node_for_gen_elems -> left_branch);
         TreeDotFileCreateElements (tree_dot_file_gen_elems, tree_node_for_gen_elems -> right_branch);
@@ -133,7 +136,6 @@ enum TreeFuncStatus TreeDotFileDrawArrows (FILE *tree_dot_file_draw,
                                            const TreeNode *tree_node_for_draw_arrows) {
 
     assert (tree_dot_file_draw);
-    assert (tree_node_for_draw_arrows);
 
     if (tree_node_for_draw_arrows -> left_branch) {
 
