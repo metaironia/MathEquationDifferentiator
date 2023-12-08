@@ -131,7 +131,7 @@ enum TreeFuncStatus TreeDotFileSetColorElement (FILE *tree_dot_file_elem_for_set
         LOG_PRINT (tree_dot_file_elem_for_set_color, "fillcolor = orange, ");
 
     else if (tree_node_for_set_color -> data -> nodeType == VARIABLE)
-        LOG_PRINT (tree_dot_file_elem_for_set_color, "fillcolor = blue, ");
+        LOG_PRINT (tree_dot_file_elem_for_set_color, "fillcolor = lightblue, ");
 
     else if (tree_node_for_set_color -> data -> nodeType == NODE_TYPE_ERROR)
         LOG_PRINT (tree_dot_file_elem_for_set_color, "fillcolor = red, ");

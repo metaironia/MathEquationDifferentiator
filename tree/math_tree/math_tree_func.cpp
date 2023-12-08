@@ -43,7 +43,7 @@ TreeNode *MathTreeNodeCopy (const TreeNode *math_tree_node_for_copy) {
     return copy_of_math_tree_node;
 }
 
-TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const int node_value,
+TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const double node_value,
                               TreeNode *const ptr_left_branch,
                               TreeNode *const ptr_right_branch) {
 
@@ -52,14 +52,20 @@ TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const int node_va
 
     math_tree_node -> data = (MathNode *) calloc (1, sizeof (MathNode));
     assert (math_tree_node -> data);
-fprintf (stderr, "before if\n");
+
     if ((type_of_node != NUMBER && type_of_node != VARIABLE) &&
         IsOperatorUnaryOrBinary ((MathNodeOperator) node_value) != type_of_node)
 
         return NULL;
-fprintf (stderr, "isdataset\n");
+
     math_tree_node -> data -> nodeType = type_of_node;
-    (math_tree_node -> data -> nodeValue).mathNodeValue = node_value;
+
+
+    if (type_of_node == NUMBER || type_of_node == VARIABLE)
+        (math_tree_node -> data -> nodeValue).mathNodeValue = node_value;
+
+    else
+        (math_tree_node -> data -> nodeValue).mathOperator = (MathNodeOperator) node_value;
 
     math_tree_node -> left_branch  = ptr_left_branch;
     math_tree_node -> right_branch = ptr_right_branch;
@@ -137,13 +143,13 @@ const char *MathNodeNumOrVarToString (const TreeNode *math_tree_node) {
     return NULL;
 }
 
-const char *NumberToString (const long long number) {
+const char *NumberToString (const double number) {
 
     static char number_to_string[MAX_NUMBER_LENGTH + 1] = {};
 
     memset (number_to_string, 0, MAX_NUMBER_LENGTH + 1);
 
-    sprintf (number_to_string, "%lld", number);
+    sprintf (number_to_string, "%.3lf", number);
 
     return number_to_string;
 }

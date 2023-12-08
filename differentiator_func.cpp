@@ -9,14 +9,27 @@
 #include "differentiator_func.h"
 #include "differentiator_commands.h"
 
+Tree *FindDerivative (const Tree *math_tree_for_take_derivative) {
 
-DifferentiatorFuncStatus DerivativeTreeCtor (Tree *derivative_tree_to_create) {
+    assert (math_tree_for_take_derivative);
+
+    Tree *derivative_tree = (Tree *) calloc (1, sizeof (Tree));
+
+    DerivativeTreeCtor (math_tree_for_take_derivative, derivative_tree);
+
+    return derivative_tree;
+}
+
+DifferentiatorFuncStatus DerivativeTreeCtor (const Tree *math_tree_for_take_derivative,
+                                             Tree *derivative_tree_to_create) {
 
     assert (derivative_tree_to_create);
 
+    MATH_TREE_VERIFY (math_tree_for_take_derivative);
+
     TreeCtor (derivative_tree_to_create);
 
-    (derivative_tree_to_create -> root) = FindNodeDerivative (derivative_tree_to_create -> root);
+    (derivative_tree_to_create -> root) = FindNodeDerivative (math_tree_for_take_derivative -> root);
 
     MATH_TREE_VERIFY (derivative_tree_to_create);
 
@@ -27,6 +40,10 @@ TreeNode *FindNodeDerivative (const TreeNode *math_expression_tree_node) {
 
     if (!math_expression_tree_node)
         return NULL;
+
+fprintf (stderr, "%s", MathNodeTypeToString (math_expression_tree_node));
+
+    MathTreeNodeVerify (math_expression_tree_node);
 
     if (math_expression_tree_node -> data -> nodeType == NUMBER)
         return CreateMathTreeNode (NUMBER, 0, NULL, NULL);

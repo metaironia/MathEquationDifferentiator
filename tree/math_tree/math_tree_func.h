@@ -42,7 +42,7 @@ Tree *MathTreeCopy (const Tree *math_tree_for_copy, Tree *copy_of_math_tree);
 
 TreeNode *MathTreeNodeCopy (const TreeNode *math_tree_node_for_copy);
 
-TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const int node_value,
+TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const double node_value,
                               TreeNode *const ptr_left_branch,
                               TreeNode *const ptr_right_branch);
 
@@ -63,7 +63,7 @@ unsigned int NodeVariableCheckErrors (const TreeNode *math_expression_node);
 
 unsigned int NodeNumberCheckErrors (const TreeNode *math_expression_node);
 
-const char *NumberToString (const long long number);
+const char *NumberToString (const double number);
 
 const char *MathNodeTypeToString (const TreeNode *math_tree_node);
 

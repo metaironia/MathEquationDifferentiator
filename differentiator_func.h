@@ -7,7 +7,10 @@
 
 #define NAME_OF_VAR(x)          #x
 
-DifferentiatorFuncStatus DerivativeTreeCtor (Tree *derivative_tree_to_create);
+Tree *FindDerivative (const Tree *math_tree_for_derivative);
+
+DifferentiatorFuncStatus DerivativeTreeCtor (const Tree *math_tree_for_take_derivative,
+                                             Tree *derivative_tree_to_create);
 
 TreeNode *FindNodeDerivative (const TreeNode *math_expression_tree_node);
 

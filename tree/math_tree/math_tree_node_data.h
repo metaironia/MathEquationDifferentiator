@@ -16,7 +16,7 @@ enum MathNodeOperator {
 
 union MathNodeData {
 
-    int mathNodeValue;
+    double mathNodeValue;
     MathNodeOperator mathOperator;
 };
 
