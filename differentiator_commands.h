@@ -3,11 +3,11 @@
 
 #include "differentiator_func.h"
 
-#define cL         (MathTreeNodeCopy (math_expression_tree_node -> left_branch))
+#define cL         (TreeNodeCopy (math_expression_tree_node -> left_branch, sizeof (MathNode)))
 
-#define cR         (MathTreeNodeCopy (math_expression_tree_node -> right_branch))
+#define cR         (TreeNodeCopy (math_expression_tree_node -> right_branch, sizeof (MathNode)))
 
-#define cCUR       (MathTreeNodeCopy (math_expression_tree_node))
+#define cCUR       (TreeNodeCopy (math_expression_tree_node, sizeof (MathNode)))
 
 #define dL         (FindNodeDerivative (math_expression_tree_node -> left_branch))
 

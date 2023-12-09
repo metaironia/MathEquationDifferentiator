@@ -53,6 +53,54 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
     return TREE_FUNC_STATUS_OK;
 }
 
+Tree *TreeCopy (const Tree *math_tree_for_copy, Tree *copy_of_math_tree, const size_t node_data_size) {
+
+    assert (math_tree_for_copy);
+    assert (copy_of_math_tree);
+
+    TREE_VERIFY_PTR_FUNC (math_tree_for_copy);
+
+    memset (copy_of_math_tree, 0, sizeof (Tree));
+
+    TreeCtor (copy_of_math_tree);
+
+    (copy_of_math_tree -> root) = TreeNodeCopy (math_tree_for_copy -> root, node_data_size);
+
+    return copy_of_math_tree;
+}
+
+TreeNode *TreeNodeCopy (const TreeNode *math_tree_node_for_copy, const size_t node_data_size) {
+
+    if (!math_tree_node_for_copy)
+        return NULL;
+
+    TreeNode *copy_of_math_tree_node = (TreeNode *) calloc (1, sizeof (TreeNode));
+    assert (copy_of_math_tree_node);
+
+    TreeNodeDataCopy (copy_of_math_tree_node, math_tree_node_for_copy, node_data_size);
+
+    (copy_of_math_tree_node -> left_branch)  = TreeNodeCopy (math_tree_node_for_copy -> left_branch,
+                                                             node_data_size);
+
+    (copy_of_math_tree_node -> right_branch) = TreeNodeCopy (math_tree_node_for_copy -> right_branch,
+                                                             node_data_size);
+
+    return copy_of_math_tree_node;
+}
+
+TreeFuncStatus TreeNodeDataCopy (TreeNode *copy_of_math_tree_node, const TreeNode* math_tree_node,
+                                 const size_t node_data_size) {
+
+    assert (copy_of_math_tree_node);
+    assert (math_tree_node);
+
+    copy_of_math_tree_node -> data = (TreeElem_t) calloc (1, node_data_size);
+
+    memcpy (copy_of_math_tree_node -> data, math_tree_node -> data, node_data_size);
+
+    return TREE_FUNC_STATUS_OK;
+}
+
 //enum TreeFuncStatus TreeReadFromFile (FILE *file_with_tree, Tree *tree_for_fill) {
 //
 //    assert (file_with_tree);
@@ -388,12 +436,15 @@ enum TreeFuncStatus TreeNodeFromPoisonSearch (const TreeNode *tree_node_for_pois
     return TREE_FUNC_STATUS_OK;
 }
 
-enum TreeFuncStatus TreeNodeSwap (TreeNode *tree_node_for_swap, const TreeNode *tree_node_new) {
+enum TreeFuncStatus TreeNodeSwap (TreeNode *tree_node_for_swap, TreeNode *tree_node_new) {
 
     assert (tree_node_for_swap);
 
     TREE_NODE_VERIFY (tree_node_for_swap);
     TREE_NODE_VERIFY (tree_node_new);
+
+    TreeNode *temp_node = CreateTreeNode ();
+    memcpy (temp_node, tree_node_new, sizeof (TreeNode));
 
     TreeAllNodesDestruct (&tree_node_for_swap -> left_branch);
     TreeAllNodesDestruct (&tree_node_for_swap -> right_branch);

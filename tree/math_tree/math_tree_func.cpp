@@ -8,40 +8,7 @@
 
 #include "math_tree_func.h"
 
-Tree *MathTreeCopy (const Tree *math_tree_for_copy, Tree *copy_of_math_tree) {
-
-    assert (math_tree_for_copy);
-    assert (copy_of_math_tree);
-
-    MATH_TREE_VERIFY_PTR_FUNC (math_tree_for_copy);
-
-    memset (copy_of_math_tree, 0, sizeof (Tree));
-
-    TreeCtor (copy_of_math_tree);
-
-    (copy_of_math_tree -> root) = MathTreeNodeCopy (math_tree_for_copy -> root);
-
-    return copy_of_math_tree;
-}
-
-TreeNode *MathTreeNodeCopy (const TreeNode *math_tree_node_for_copy) {
-
-    if (!math_tree_node_for_copy)
-        return NULL;
-
-    TreeNode *copy_of_math_tree_node = (TreeNode *) calloc (1, sizeof (TreeNode));
-    assert (copy_of_math_tree_node);
-
-    memcpy (copy_of_math_tree_node, math_tree_node_for_copy, sizeof (TreeNode));
-
-    //MathTreeNodeDataCopy (copy_of_math_tree_node, math_tree_node_for_copy);
-
-    (copy_of_math_tree_node -> left_branch)  = MathTreeNodeCopy (math_tree_node_for_copy -> left_branch);
-
-    (copy_of_math_tree_node -> right_branch) = MathTreeNodeCopy (math_tree_node_for_copy -> right_branch);
-
-    return copy_of_math_tree_node;
-}
+#include "../../differentiator_commands.h"
 
 TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const double node_value,
                               TreeNode *const ptr_left_branch,
@@ -59,7 +26,6 @@ TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const double node
         return NULL;
 
     math_tree_node -> data -> nodeType = type_of_node;
-
 
     if (type_of_node == NUMBER || type_of_node == VARIABLE)
         (math_tree_node -> data -> nodeValue).mathNodeValue = node_value;
@@ -106,7 +72,7 @@ TreeFuncStatus MathNodeTypePrint (FILE *file_for_print,
 
     LOG_PRINT (file_for_print, "%s", MathNodeTypeToString (math_tree_node_for_print));
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 const char *MathNodeTypeToString (const TreeNode *math_tree_node) {
@@ -321,4 +287,68 @@ unsigned int NodeNumberCheckErrors (const TreeNode *math_expression_node) {
 
     return is_number_error;
 }
+
+TreeFuncStatus MathTreeNodeConstantsSimplify (TreeNode *math_expression_node) {
+
+    MATH_TREE_NODE_VERIFY (math_expression_node, TREE);
+
+    const MathNodeType current_node_type = math_expression_node -> data -> nodeType;
+
+    switch (current_node_type) {
+
+//        case UNARY_OPERATOR:
+//            MathTreeNodeUnaryOperatorSimplify (math_expression_node);
+//            break;
+
+        case BINARY_OPERATOR:
+            MathTreeNodeBinaryOperatorSimplify (math_expression_node);
+            break;
+
+        case NUMBER:
+        case VARIABLE:
+            break;
+
+        case NODE_TYPE_ERROR:
+        default:
+            fprintf (stderr, "NODE TYPE ERROR\n"); //TODO make output to log file
+    }
+
+}
+
+TreeFuncStatus MathTreeNodeBinaryOperatorSimplify (TreeNode *math_expression_node) {
+
+    MATH_TREE_NODE_VERIFY (math_expression_node, TREE);
+
+    const MathNodeOperator current_node_operator = (math_expression_node -> data -> nodeValue).mathOperator;
+
+    const MathNodeType left_branch_node_type = (math_expression_node -> left_branch -> data -> nodeType);
+    const MathNodeType right_branch_node_type = (math_expression_node -> right_branch -> data -> nodeType);
+
+    double left_branch_value = (math_expression_node -> left_branch -> data -> nodeValue).mathNodeValue;
+    double right_branch_value = (math_expression_node -> right_branch -> data -> nodeValue).mathNodeValue;
+
+    switch (current_node_operator) {
+
+        case OPERATOR_ADD:
+            if (left_branch_node_type == NUMBER && right_branch_node_type == NUMBER) {
+
+                TreeNode *temp_node = NUM_ (left_branch_value + right_branch_value);
+                TreeNodeSwap (math_expression_node, temp_node);
+            }
+
+//            if (left_branch_node_type == NUMBER && IsZero (left_branch_value)) {
+//
+//                TreeAllNodesDestruct (math_expression_node -> left_branch);
+//
+//                TreeNodeSwap (math_expression_node, temp_node);
+//            }
+
+            break;
+
+        default:
+            break;
+    }
+}
+
+
 

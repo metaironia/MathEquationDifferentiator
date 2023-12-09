@@ -30,6 +30,16 @@
                                 }                                               \
                             }
 
+#define TREE_VERIFY_PTR_FUNC(tree)                                              \
+                            {                                                   \
+                                if (TreeVerify (tree, __func__) != 0) {         \
+                                                                                \
+                                    MathTreeGraphDump (tree);                   \
+                                                                                \
+                                    return NULL;                                \
+                                }                                               \
+                            }
+
 #define TREE_NODE_VERIFY(tree_node)                                  \
                             {                                        \
                                 if (TreeNodeVerify (tree_node) != 0) \
@@ -111,6 +121,13 @@ enum TreeFuncStatus TreeNodeLeftBranchCreate (TreeNode *node_for_add_left_branch
 
 enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_branch);
 
+Tree *TreeCopy (const Tree *math_tree_for_copy, Tree *copy_of_math_tree, const size_t node_data_size);
+
+TreeNode *TreeNodeCopy (const TreeNode *math_tree_node_for_copy, const size_t node_data_size);
+
+TreeFuncStatus TreeNodeDataCopy (TreeNode *copy_of_math_tree_node, const TreeNode* math_tree_node,
+                                 const size_t node_data_size);
+
 //enum TreeFuncStatus TreeReadFromFile (FILE *file_with_tree, Tree *tree_for_fill);
 
 //enum TreeFuncStatus TreeNodeRead (FILE *file_for_read_tree, TreeNode **tree_node_for_fill);
@@ -139,7 +156,7 @@ enum TreeFuncStatus TreeCycledNodeSearch (const TreeNode *tree_node_for_cycle_se
 
 enum TreeFuncStatus TreeNodeFromPoisonSearch (const TreeNode *tree_node_for_poison_search);
 
-enum TreeFuncStatus TreeNodeSwap (TreeNode *tree_node_for_swap, const TreeNode *tree_node_new);
+enum TreeFuncStatus TreeNodeSwap (TreeNode *tree_node_for_swap, TreeNode *tree_node_new);
 
 enum TreeFuncStatus TreeNodeClear (TreeNode *tree_node_for_destruct);
 

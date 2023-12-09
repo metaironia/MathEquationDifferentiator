@@ -36,10 +36,6 @@ const int MAX_NUMBER_LENGTH = 30;
 
 MathNodeType IsOperatorUnaryOrBinary (const MathNodeOperator node_operator_to_check);
 
-Tree *MathTreeCopy (const Tree *math_tree_for_copy, Tree *copy_of_math_tree);
-
-TreeNode *MathTreeNodeCopy (const TreeNode *math_tree_node_for_copy);
-
 TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const double node_value,
                               TreeNode *const ptr_left_branch,
                               TreeNode *const ptr_right_branch);
@@ -68,5 +64,10 @@ const char *MathNodeTypeToString (const TreeNode *math_tree_node);
 const char *MathNodeNumOrVarToString (const TreeNode *math_tree_node);
 
 const char *MathNodeOperatorToString (const TreeNode *math_tree_node);
+
+TreeFuncStatus MathTreeNodeConstantsSimplify (TreeNode *math_expression_node);
+
+TreeFuncStatus MathTreeNodeBinaryOperatorSimplify (TreeNode *math_expression_node);
+
 
 #endif
