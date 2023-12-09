@@ -25,13 +25,11 @@ DifferentiatorFuncStatus DerivativeTreeCtor (const Tree *math_tree_for_take_deri
 
     assert (derivative_tree_to_create);
 
-    MATH_TREE_VERIFY (math_tree_for_take_derivative);
-
     TreeCtor (derivative_tree_to_create);
 
     (derivative_tree_to_create -> root) = FindNodeDerivative (math_tree_for_take_derivative -> root);
 
-    MATH_TREE_VERIFY (derivative_tree_to_create);
+    MATH_TREE_VERIFY (derivative_tree_to_create, DIFF);
 
     return DIFF_FUNC_STATUS_OK;
 }
@@ -70,6 +68,10 @@ fprintf (stderr, "%s", MathNodeTypeToString (math_expression_tree_node));
 
         case OPERATOR_POW:
             return MUL_ (cCUR, ADD_ (MUL_ (dR, LN_ (cL)), MUL_ (cR, LN_ (dL))));
+            break;
+
+        case OPERATOR_LN:
+            return MUL_ (DIV_ (NUM_ (1), cL), dL);
             break;
 
         default:

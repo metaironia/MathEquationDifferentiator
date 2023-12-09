@@ -101,6 +101,7 @@ MathNodeType IsOperatorUnaryOrBinary (const MathNodeOperator node_operator_to_ch
 TreeFuncStatus MathNodeTypePrint (FILE *file_for_print,
                                   const TreeNode *math_tree_node_for_print) {
 
+    assert (file_for_print);
     assert (math_tree_node_for_print);
 
     LOG_PRINT (file_for_print, "%s", MathNodeTypeToString (math_tree_node_for_print));

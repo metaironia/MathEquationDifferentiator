@@ -36,7 +36,7 @@ enum TreeFuncStatus LogPrintTreeError (const char *error_text) {
 
     LOG_PRINT (TREE_LOG_FILE, "An error %s occurred.\n ", error_text);
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 enum TreeFuncStatus MathTreeGraphDump (const Tree *tree_for_graph_dump) {
@@ -57,14 +57,14 @@ enum TreeFuncStatus MathTreeGraphDump (const Tree *tree_for_graph_dump) {
 
     TreeImageCreate (tree_dot_file);
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 enum TreeFuncStatus TreeImageFolderCreate (void) {
 
     system ("mkdir \images");
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 enum TreeFuncStatus TreeImageCreate (FILE *tree_dot_file) {
@@ -73,7 +73,7 @@ enum TreeFuncStatus TreeImageCreate (FILE *tree_dot_file) {
 
     system (CommandToCreateImageCreate (ImageNameCreate ()));
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 const char *ImageNameCreate (void) {
@@ -105,11 +105,11 @@ enum TreeFuncStatus TreeDotFileBegin (FILE *tree_dot_file_begin) {
 
     assert (tree_dot_file_begin);
 
-    LOG_PRINT (tree_dot_file_begin, "digraph AkinatorTree{\n"
+    LOG_PRINT (tree_dot_file_begin, "digraph DifferentiatorTree{\n"
                                     "rankdir = TB;\n"
                                     "graph [bgcolor = white];\n");
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 enum TreeFuncStatus TreeDotFileEnd (FILE *tree_dot_file_end) {
@@ -118,7 +118,7 @@ enum TreeFuncStatus TreeDotFileEnd (FILE *tree_dot_file_end) {
 
     LOG_PRINT (tree_dot_file_end, "\n}\n");
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 enum TreeFuncStatus TreeDotFileSetColorElement (FILE *tree_dot_file_elem_for_set_color,
@@ -139,7 +139,7 @@ enum TreeFuncStatus TreeDotFileSetColorElement (FILE *tree_dot_file_elem_for_set
     else
         LOG_PRINT (tree_dot_file_elem_for_set_color, "fillcolor = lightgreen, ");
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 enum TreeFuncStatus TreeDotFileCreateElements (FILE *tree_dot_file_gen_elems,
@@ -168,7 +168,7 @@ enum TreeFuncStatus TreeDotFileCreateElements (FILE *tree_dot_file_gen_elems,
         TreeDotFileCreateElements (tree_dot_file_gen_elems, tree_node_for_gen_elems -> right_branch);
     }
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 enum TreeFuncStatus TreeDotFileDrawArrows (FILE *tree_dot_file_draw,
@@ -194,5 +194,5 @@ enum TreeFuncStatus TreeDotFileDrawArrows (FILE *tree_dot_file_draw,
         TreeDotFileDrawArrows (tree_dot_file_draw, tree_node_for_draw_arrows -> right_branch);
     }
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }

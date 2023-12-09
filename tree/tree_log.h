@@ -22,6 +22,7 @@
                                       }
 
 const int MAX_IMAGE_NAME_LENGTH = 64;
+
 const int MAX_COMMAND_LENGTH    = 64;
 
 FILE *CreateLogFile (const char *log_file_name);

@@ -26,14 +26,14 @@
                                                                                 \
                                     MathTreeGraphDump (tree);                   \
                                                                                 \
-                                    return TREE_STATUS_FAIL;                    \
+                                    return TREE_FUNC_STATUS_FAIL;               \
                                 }                                               \
                             }
 
 #define TREE_NODE_VERIFY(tree_node)                                  \
                             {                                        \
                                 if (TreeNodeVerify (tree_node) != 0) \
-                                    return TREE_STATUS_FAIL;         \
+                                    return TREE_FUNC_STATUS_FAIL;    \
                             }
 
 typedef MathNode* TreeElem_t;
@@ -78,8 +78,8 @@ struct Tree {
 
 enum TreeFuncStatus {
 
-    TREE_STATUS_OK,
-    TREE_STATUS_FAIL
+    TREE_FUNC_STATUS_OK,
+    TREE_FUNC_STATUS_FAIL
 };
 
 enum TreeErrors {

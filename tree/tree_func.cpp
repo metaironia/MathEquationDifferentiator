@@ -19,7 +19,7 @@ enum TreeFuncStatus TreeCtor (Tree *tree_to_create) {
 
     TREE_VERIFY (tree_to_create);
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 TreeNode *CreateTreeNode (void) {
@@ -39,7 +39,7 @@ enum TreeFuncStatus TreeNodeLeftBranchCreate (TreeNode *node_for_add_left_branch
 
     TREE_NODE_VERIFY (node_for_add_left_branch);
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_branch) {
@@ -50,7 +50,7 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 
     TREE_NODE_VERIFY (node_for_add_right_branch);
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 //enum TreeFuncStatus TreeReadFromFile (FILE *file_with_tree, Tree *tree_for_fill) {
@@ -59,16 +59,16 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //
 //    TREE_VERIFY (tree_for_fill);
 //
-//    if (TreeNodeRead (file_with_tree, &(tree_for_fill -> root)) == TREE_STATUS_FAIL) {
+//    if (TreeNodeRead (file_with_tree, &(tree_for_fill -> root)) == TREE_FUNC_STATUS_FAIL) {
 //
 //        fprintf (stderr, "Database is incorrect.");
 //
-//        return TREE_STATUS_FAIL;
+//        return TREE_FUNC_STATUS_FAIL;
 //    }
 //
 //    TREE_VERIFY (tree_for_fill);
 //
-//    return TREE_STATUS_OK;
+//    return TREE_FUNC_STATUS_OK;
 //}
 //
 //enum TreeFuncStatus TreeNodeRead (FILE *file_for_read_tree, TreeNode **tree_node_for_fill) {  //PREORDER
@@ -82,10 +82,10 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //
 //    if (IsBracketInFileStr (file_for_read_tree, '(') == false) {
 //
-//        if (TreeNodeNilCheck (file_for_read_tree, buf) == TREE_STATUS_OK)
-//            return TREE_STATUS_OK;
+//        if (TreeNodeNilCheck (file_for_read_tree, buf) == TREE_FUNC_STATUS_OK)
+//            return TREE_FUNC_STATUS_OK;
 //        else
-//            return TREE_STATUS_FAIL;
+//            return TREE_FUNC_STATUS_FAIL;
 //    }
 //
 //
@@ -95,16 +95,16 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //
 //    TREE_NODE_VERIFY (*tree_node_for_fill);
 //
-//    if (TreeNodeDataRead (file_for_read_tree, *tree_node_for_fill, buf) == TREE_STATUS_FAIL)
-//        return TREE_STATUS_FAIL;
+//    if (TreeNodeDataRead (file_for_read_tree, *tree_node_for_fill, buf) == TREE_FUNC_STATUS_FAIL)
+//        return TREE_FUNC_STATUS_FAIL;
 //
 //    //recursion below
 //
-//    if (TreeNodeRead (file_for_read_tree, &((*tree_node_for_fill) -> left_branch)) == TREE_STATUS_FAIL)
-//        return TREE_STATUS_FAIL;
+//    if (TreeNodeRead (file_for_read_tree, &((*tree_node_for_fill) -> left_branch)) == TREE_FUNC_STATUS_FAIL)
+//        return TREE_FUNC_STATUS_FAIL;
 //
-//    if (TreeNodeRead (file_for_read_tree, &((*tree_node_for_fill) -> right_branch)) == TREE_STATUS_FAIL)
-//        return TREE_STATUS_FAIL;
+//    if (TreeNodeRead (file_for_read_tree, &((*tree_node_for_fill) -> right_branch)) == TREE_FUNC_STATUS_FAIL)
+//        return TREE_FUNC_STATUS_FAIL;
 //
 //    //ON_TREE_DEBUG (printf ("|read two nodes|"));
 //
@@ -114,10 +114,10 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //
 //        ON_TREE_DEBUG (printf (") "));
 //
-//        return TREE_STATUS_OK;
+//        return TREE_FUNC_STATUS_OK;
 //    }
 //
-//    return TREE_STATUS_FAIL;
+//    return TREE_FUNC_STATUS_FAIL;
 //}
 //
 //enum TreeFuncStatus TreeNodeNilCheck (FILE *file_for_node_nil_check, char *buffer_for_node_check) {
@@ -131,12 +131,12 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //
 //        ON_TREE_DEBUG (printf ("nil "));
 //
-//        return TREE_STATUS_OK;
+//        return TREE_FUNC_STATUS_OK;
 //    }
 //
 //    ON_TREE_DEBUG (printf ("wtf"));
 //
-//    return TREE_STATUS_FAIL;
+//    return TREE_FUNC_STATUS_FAIL;
 //}
 
 //enum TreeFuncStatus TreeNodeDataRead (FILE *file_for_read_node_data, TreeNode *tree_node_for_data_read,
@@ -162,7 +162,7 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //
 //            ON_TREE_DEBUG (printf("data "));
 //
-//            return TREE_STATUS_OK;
+//            return TREE_FUNC_STATUS_OK;
 //        }
 //    }
 //
@@ -171,12 +171,12 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //
 //            ON_TREE_DEBUG (printf ("data "));
 //
-//            return TREE_STATUS_OK;
+//            return TREE_FUNC_STATUS_OK;
 //        }
 //
 //    ON_TREE_DEBUG (printf ("wtf "));
 //
-//    return TREE_STATUS_FAIL;
+//    return TREE_FUNC_STATUS_FAIL;
 //}
 
 //enum TreeFuncStatus TreeOutputToFile (FILE *file_for_output_tree, const Tree *tree_for_output) {   //TODO output
@@ -187,7 +187,7 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //
 //    TreeNodeOutputToFile (file_for_output_tree, tree_for_output -> root);
 //
-//    return TREE_STATUS_OK;
+//    return TREE_FUNC_STATUS_OK;
 //}
 //
 //enum TreeFuncStatus TreeNodeOutputToFile (FILE *file_for_output_node,
@@ -199,7 +199,7 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //
 //        fprintf (file_for_output_node, "nil ");
 //
-//        return TREE_STATUS_OK;
+//        return TREE_FUNC_STATUS_OK;
 //    }
 //
 //    TREE_NODE_VERIFY (tree_node_for_output);
@@ -217,7 +217,7 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //
 //    fprintf (file_for_output_node, ") ");
 //
-//    return TREE_STATUS_OK;
+//    return TREE_FUNC_STATUS_OK;
 //}
 
 //enum TreeFuncStatus TreeElementFind (const Tree *tree_for_element_find, const TreeElem_t tree_data_to_find,
@@ -229,11 +229,11 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //        assert (tree_data_to_find);
 //
 //    if (TreeNodeElementFind (tree_for_element_find -> root, tree_data_to_find,
-//                             stack_tree_path) == TREE_STATUS_OK)
+//                             stack_tree_path) == TREE_FUNC_STATUS_OK)
 //
-//        return TREE_STATUS_OK;
+//        return TREE_FUNC_STATUS_OK;
 //
-//    return TREE_STATUS_FAIL;
+//    return TREE_FUNC_STATUS_FAIL;
 //}
 //
 //enum TreeFuncStatus TreeNodeElementFind (const TreeNode *tree_node_for_element_find,
@@ -243,35 +243,35 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //    assert (stack_tree_node_path);
 //
 //    if (!tree_node_for_element_find)
-//        return TREE_STATUS_FAIL;
+//        return TREE_FUNC_STATUS_FAIL;
 //
 //    TREE_NODE_VERIFY (tree_node_for_element_find);
 //
 //    if (IS_TREE_ELEM_STRING)
 //        assert (tree_node_data_to_find);
 //
-//    if (TreeCompareData (tree_node_for_element_find, tree_node_data_to_find) == TREE_STATUS_OK)
-//        return TREE_STATUS_OK;
+//    if (TreeCompareData (tree_node_for_element_find, tree_node_data_to_find) == TREE_FUNC_STATUS_OK)
+//        return TREE_FUNC_STATUS_OK;
 //
 //    //recursion below
 //
 //    if (TreeNodeElementFind (tree_node_for_element_find -> left_branch,
-//                             tree_node_data_to_find, stack_tree_node_path) == TREE_STATUS_OK) {
+//                             tree_node_data_to_find, stack_tree_node_path) == TREE_FUNC_STATUS_OK) {
 //
 //        StackPush (stack_tree_node_path, 1);   //TODO fix nums here
 //
-//        return TREE_STATUS_OK;
+//        return TREE_FUNC_STATUS_OK;
 //    }
 //
 //    if (TreeNodeElementFind (tree_node_for_element_find -> right_branch,
-//                             tree_node_data_to_find, stack_tree_node_path) == TREE_STATUS_OK) {
+//                             tree_node_data_to_find, stack_tree_node_path) == TREE_FUNC_STATUS_OK) {
 //
 //        StackPush (stack_tree_node_path, 0);   //TODO fix nums here
 //
-//        return TREE_STATUS_OK;
+//        return TREE_FUNC_STATUS_OK;
 //    }
 //
-//    return TREE_STATUS_FAIL;
+//    return TREE_FUNC_STATUS_FAIL;
 //}
 
 //enum TreeFuncStatus TreeCompareData (const TreeNode *tree_node_for_cmp_data,      //TODO compare math node
@@ -285,13 +285,13 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 //    if (IS_TREE_ELEM_STRING)  {
 //
 //        if (strcmp (data_to_cmp, tree_node_for_cmp_data -> data) == 0)
-//            return TREE_STATUS_OK;
+//            return TREE_FUNC_STATUS_OK;
 //    }
 //
 //    else if (tree_node_for_cmp_data -> data == data_to_cmp)   //TODO compare double values
-//        return TREE_STATUS_OK;
+//        return TREE_FUNC_STATUS_OK;
 //
-//    return TREE_STATUS_FAIL;
+//    return TREE_FUNC_STATUS_FAIL;
 //}
 
 unsigned int TreeVerify (const Tree *tree_for_verify, const char *name_parent_func) {      //TODO fix copypaste in verifier
@@ -330,7 +330,7 @@ unsigned int TreeNodeVerify (const TreeNode *tree_node_for_verify) {
         return errors_in_tree_node;
     }
 
-    if (TreeCycledNodeSearch (tree_node_for_verify) == TREE_STATUS_FAIL)
+    if (TreeCycledNodeSearch (tree_node_for_verify) == TREE_FUNC_STATUS_FAIL)
         TREE_ERROR_SET_AND_PRINT (errors_in_tree_node, TREE_CYCLED_NODE);
 
     if (!(tree_node_for_verify -> data) &&
@@ -341,7 +341,7 @@ unsigned int TreeNodeVerify (const TreeNode *tree_node_for_verify) {
         return errors_in_tree_node;
     }
 
-    if (TreeNodeFromPoisonSearch (tree_node_for_verify) == TREE_STATUS_FAIL)
+    if (TreeNodeFromPoisonSearch (tree_node_for_verify) == TREE_FUNC_STATUS_FAIL)
         TREE_ERROR_SET_AND_PRINT (errors_in_tree_node, BRANCH_FROM_POISON);
 
     return errors_in_tree_node;
@@ -350,42 +350,42 @@ unsigned int TreeNodeVerify (const TreeNode *tree_node_for_verify) {
 enum TreeFuncStatus TreeCycledNodeSearch (const TreeNode *tree_node_for_cycle_search) {
 
     if (!tree_node_for_cycle_search)
-        return TREE_STATUS_OK;
+        return TREE_FUNC_STATUS_OK;
 
     if (tree_node_for_cycle_search == tree_node_for_cycle_search -> left_branch ||
         tree_node_for_cycle_search == tree_node_for_cycle_search -> right_branch)
 
-        return TREE_STATUS_FAIL;
+        return TREE_FUNC_STATUS_FAIL;
 
     //recursion below
 
-    if (TreeCycledNodeSearch (tree_node_for_cycle_search -> left_branch)  == TREE_STATUS_FAIL ||
-        TreeCycledNodeSearch (tree_node_for_cycle_search -> right_branch) == TREE_STATUS_FAIL)
+    if (TreeCycledNodeSearch (tree_node_for_cycle_search -> left_branch)  == TREE_FUNC_STATUS_FAIL ||
+        TreeCycledNodeSearch (tree_node_for_cycle_search -> right_branch) == TREE_FUNC_STATUS_FAIL)
 
-        return TREE_STATUS_FAIL;
+        return TREE_FUNC_STATUS_FAIL;
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 enum TreeFuncStatus TreeNodeFromPoisonSearch (const TreeNode *tree_node_for_poison_search) {
 
     if (!tree_node_for_poison_search)
-        return TREE_STATUS_OK;
+        return TREE_FUNC_STATUS_OK;
 
     if (IS_TREE_ELEM_POISON (tree_node_for_poison_search -> data) &&
         (tree_node_for_poison_search -> left_branch != NULL ||
         tree_node_for_poison_search -> right_branch != NULL))
 
-        return TREE_STATUS_FAIL;
+        return TREE_FUNC_STATUS_FAIL;
 
     //recursion below
 
-    if (TreeNodeFromPoisonSearch (tree_node_for_poison_search -> left_branch)  == TREE_STATUS_FAIL ||
-        TreeNodeFromPoisonSearch (tree_node_for_poison_search -> right_branch) == TREE_STATUS_FAIL)
+    if (TreeNodeFromPoisonSearch (tree_node_for_poison_search -> left_branch)  == TREE_FUNC_STATUS_FAIL ||
+        TreeNodeFromPoisonSearch (tree_node_for_poison_search -> right_branch) == TREE_FUNC_STATUS_FAIL)
 
-        return TREE_STATUS_FAIL;
+        return TREE_FUNC_STATUS_FAIL;
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 enum TreeFuncStatus TreeNodeDestruct (TreeNode **tree_node_for_destruct) {
@@ -393,7 +393,7 @@ enum TreeFuncStatus TreeNodeDestruct (TreeNode **tree_node_for_destruct) {
     assert (tree_node_for_destruct);
 
     if (!(*tree_node_for_destruct))
-        return TREE_STATUS_OK;
+        return TREE_FUNC_STATUS_OK;
 
     TreeNodeDestruct (&((*tree_node_for_destruct) -> left_branch));
     TreeNodeDestruct (&((*tree_node_for_destruct) -> right_branch));
@@ -406,7 +406,7 @@ enum TreeFuncStatus TreeNodeDestruct (TreeNode **tree_node_for_destruct) {
     free (*tree_node_for_destruct);
     *tree_node_for_destruct = NULL;
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 enum TreeFuncStatus TreeDestruct (Tree *tree_for_destruct) {
@@ -415,7 +415,7 @@ enum TreeFuncStatus TreeDestruct (Tree *tree_for_destruct) {
 
     TreeNodeDestruct (&(tree_for_destruct -> root));
 
-    return TREE_STATUS_OK;
+    return TREE_FUNC_STATUS_OK;
 }
 
 bool IsBracketInFileStr (FILE *file_to_check_str, const char bracket_type) {
