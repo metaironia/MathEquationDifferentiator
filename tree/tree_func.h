@@ -139,6 +139,8 @@ enum TreeFuncStatus TreeCycledNodeSearch (const TreeNode *tree_node_for_cycle_se
 
 enum TreeFuncStatus TreeNodeFromPoisonSearch (const TreeNode *tree_node_for_poison_search);
 
+enum TreeFuncStatus TreeNodeSwap (TreeNode **tree_node_for_swap, const TreeNode *tree_node_new);
+
 enum TreeFuncStatus TreeOneNodeDestruct (TreeNode **tree_node_for_destruct);
 
 enum TreeFuncStatus TreeAllNodesDestruct (TreeNode **tree_node_for_destruct);

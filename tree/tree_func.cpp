@@ -388,6 +388,20 @@ enum TreeFuncStatus TreeNodeFromPoisonSearch (const TreeNode *tree_node_for_pois
     return TREE_FUNC_STATUS_OK;
 }
 
+enum TreeFuncStatus TreeNodeSwap (TreeNode **tree_node_for_swap, const TreeNode *tree_node_new) {
+
+    assert (tree_node_for_swap);
+
+    TREE_NODE_VERIFY (*tree_node_for_swap, TREE);
+    TREE_NODE_VERIFY (tree_node_new, TREE);
+
+    TreeAllNodesDestruct (tree_node_for_swap);
+
+    *tree_node_for_swap = tree_node_new;
+
+    return TREE_FUNC_STATUS_OK;
+}
+
 enum TreeFuncStatus TreeOneNodeDestruct (TreeNode **tree_node_for_destruct) {
 
     assert (tree_node_for_destruct);
