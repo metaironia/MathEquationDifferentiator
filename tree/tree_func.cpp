@@ -388,34 +388,32 @@ enum TreeFuncStatus TreeNodeFromPoisonSearch (const TreeNode *tree_node_for_pois
     return TREE_FUNC_STATUS_OK;
 }
 
-enum TreeFuncStatus TreeNodeSwap (TreeNode **tree_node_for_swap, const TreeNode *tree_node_new) {
+enum TreeFuncStatus TreeNodeSwap (TreeNode *tree_node_for_swap, const TreeNode *tree_node_new) {
 
     assert (tree_node_for_swap);
 
-    TREE_NODE_VERIFY (*tree_node_for_swap, TREE);
-    TREE_NODE_VERIFY (tree_node_new, TREE);
+    TREE_NODE_VERIFY (tree_node_for_swap);
+    TREE_NODE_VERIFY (tree_node_new);
 
-    TreeAllNodesDestruct (tree_node_for_swap);
+    TreeAllNodesDestruct (&tree_node_for_swap -> left_branch);
+    TreeAllNodesDestruct (&tree_node_for_swap -> right_branch);
 
-    *tree_node_for_swap = tree_node_new;
+    memcpy (tree_node_for_swap, tree_node_new, sizeof (TreeNode));
+
+    free (tree_node_new);
+    tree_node_new = NULL;
 
     return TREE_FUNC_STATUS_OK;
 }
 
-enum TreeFuncStatus TreeOneNodeDestruct (TreeNode **tree_node_for_destruct) {
+enum TreeFuncStatus TreeNodeClear (TreeNode *tree_node_for_destruct) {
 
-    assert (tree_node_for_destruct);
-
-    if (!(*tree_node_for_destruct))
+    if (!tree_node_for_destruct)
         return TREE_FUNC_STATUS_OK;
 
-    if (IS_TREE_ELEM_STRING)
-        free ((*tree_node_for_destruct) -> data);
+    free (tree_node_for_destruct -> data);
 
-    memset (&((*tree_node_for_destruct) -> data), 0, sizeof (TreeElem_t));
-
-    free (*tree_node_for_destruct);
-    *tree_node_for_destruct = NULL;
+    memset (&(tree_node_for_destruct -> data), 0, sizeof (TreeElem_t));
 
     return TREE_FUNC_STATUS_OK;
 }
@@ -430,8 +428,7 @@ enum TreeFuncStatus TreeAllNodesDestruct (TreeNode **tree_node_for_destruct) {
     TreeAllNodesDestruct (&((*tree_node_for_destruct) -> left_branch));
     TreeAllNodesDestruct (&((*tree_node_for_destruct) -> right_branch));
 
-    if (IS_TREE_ELEM_STRING)
-        free ((*tree_node_for_destruct) -> data);
+    free ((*tree_node_for_destruct) -> data);
 
     memset (&((*tree_node_for_destruct) -> data), 0, sizeof (TreeElem_t));
 

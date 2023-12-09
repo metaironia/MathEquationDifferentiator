@@ -38,7 +38,7 @@
 
 typedef MathNode* TreeElem_t;
 
-#define IS_TREE_ELEM_STRING 1
+#define IS_TREE_ELEM_STRING 0
 
 /// 1 if tree element type is floating point number, 0 if not.
 #define IS_TREE_ELEM_FLOAT  0
@@ -139,9 +139,9 @@ enum TreeFuncStatus TreeCycledNodeSearch (const TreeNode *tree_node_for_cycle_se
 
 enum TreeFuncStatus TreeNodeFromPoisonSearch (const TreeNode *tree_node_for_poison_search);
 
-enum TreeFuncStatus TreeNodeSwap (TreeNode **tree_node_for_swap, const TreeNode *tree_node_new);
+enum TreeFuncStatus TreeNodeSwap (TreeNode *tree_node_for_swap, const TreeNode *tree_node_new);
 
-enum TreeFuncStatus TreeOneNodeDestruct (TreeNode **tree_node_for_destruct);
+enum TreeFuncStatus TreeNodeClear (TreeNode *tree_node_for_destruct);
 
 enum TreeFuncStatus TreeAllNodesDestruct (TreeNode **tree_node_for_destruct);
 
