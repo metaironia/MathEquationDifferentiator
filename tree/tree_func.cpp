@@ -388,15 +388,33 @@ enum TreeFuncStatus TreeNodeFromPoisonSearch (const TreeNode *tree_node_for_pois
     return TREE_FUNC_STATUS_OK;
 }
 
-enum TreeFuncStatus TreeNodeDestruct (TreeNode **tree_node_for_destruct) {
+enum TreeFuncStatus TreeOneNodeDestruct (TreeNode **tree_node_for_destruct) {
 
     assert (tree_node_for_destruct);
 
     if (!(*tree_node_for_destruct))
         return TREE_FUNC_STATUS_OK;
 
-    TreeNodeDestruct (&((*tree_node_for_destruct) -> left_branch));
-    TreeNodeDestruct (&((*tree_node_for_destruct) -> right_branch));
+    if (IS_TREE_ELEM_STRING)
+        free ((*tree_node_for_destruct) -> data);
+
+    memset (&((*tree_node_for_destruct) -> data), 0, sizeof (TreeElem_t));
+
+    free (*tree_node_for_destruct);
+    *tree_node_for_destruct = NULL;
+
+    return TREE_FUNC_STATUS_OK;
+}
+
+enum TreeFuncStatus TreeAllNodesDestruct (TreeNode **tree_node_for_destruct) {
+
+    assert (tree_node_for_destruct);
+
+    if (!(*tree_node_for_destruct))
+        return TREE_FUNC_STATUS_OK;
+
+    TreeAllNodesDestruct (&((*tree_node_for_destruct) -> left_branch));
+    TreeAllNodesDestruct (&((*tree_node_for_destruct) -> right_branch));
 
     if (IS_TREE_ELEM_STRING)
         free ((*tree_node_for_destruct) -> data);
@@ -413,7 +431,7 @@ enum TreeFuncStatus TreeDestruct (Tree *tree_for_destruct) {
 
     assert (tree_for_destruct);
 
-    TreeNodeDestruct (&(tree_for_destruct -> root));
+    TreeAllNodesDestruct (&(tree_for_destruct -> root));
 
     return TREE_FUNC_STATUS_OK;
 }
