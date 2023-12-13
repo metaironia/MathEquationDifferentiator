@@ -7,7 +7,9 @@ CXXFLAGS=-Wshadow -Winit-self -Wcast-align -Wundef -Wfloat-equal -Winline -Wredu
 	 -Wnon-virtual-dtor -Woverloaded-virtual -Wpointer-arith -Wsign-promo -Wstack-usage=8192 -Wstrict-aliasing \
 	 -Wstrict-null-sentinel -Wtype-limits -Wwrite-strings -Werror=vla -D_DEBUG -D_EJUDGE_CLIENT_SIDE 
 SOURCES= main.cpp differentiator_func.cpp tree/tree_func.cpp tree/tree_log.cpp stack/my_stack_func.cpp \
-	 stack/hash_func.cpp tree/math_tree/math_tree_func.cpp latex_generator/latex_generator.cpp
+	 stack/hash_func.cpp tree/math_tree/math_tree_func.cpp latex_generator/latex_generator.cpp    \
+	 tree/math_tree/math_operation.cpp
+	
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=differentiator
 

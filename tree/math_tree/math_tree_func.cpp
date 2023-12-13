@@ -2,13 +2,15 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "math_tree_node_data.h"
+#include "../../differentiator_commands.h"
+
 #include "../tree_func.h"
 #include "../tree_log.h"
 
 #include "math_tree_func.h"
+#include "math_tree_node_data.h"
 
-#include "../../differentiator_commands.h"
+#include "math_operation.h"
 
 TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const double node_value,
                               TreeNode *const ptr_left_branch,
@@ -327,7 +329,7 @@ TreeFuncStatus MathTreeNodeBinaryOperatorSimplify (TreeNode *math_expression_nod
     double left_branch_value = (math_expression_node -> left_branch -> data -> nodeValue).mathNodeValue;
     double right_branch_value = (math_expression_node -> right_branch -> data -> nodeValue).mathNodeValue;
 
-    switch (current_node_operator) {
+    switch (current_node_operator) {       //TODO fix architecture of if-switch
 
         case OPERATOR_ADD:
             if (left_branch_node_type == NUMBER && right_branch_node_type == NUMBER) {
@@ -336,21 +338,31 @@ TreeFuncStatus MathTreeNodeBinaryOperatorSimplify (TreeNode *math_expression_nod
 
                 TreeNodeReplace (math_expression_node, temp_node, sizeof (MathNode));
 
-fprintf (stderr, "after simp %lf\n", math_expression_node -> data -> nodeValue.mathNodeValue);
             }
 
-//            if (left_branch_node_type == NUMBER && IsZero (left_branch_value)) {
-//
-//                TreeAllNodesDestruct (math_expression_node -> left_branch);
-//
-//                TreeNodeSwap (math_expression_node, temp_node);
-//            }
+            if (left_branch_node_type == NUMBER && IsZero (left_branch_value)) {
+
+                TreeAllNodesDestruct (&(math_expression_node -> left_branch));
+
+                TreeNodeReplace (math_expression_node, math_expression_node -> left_branch,
+                                 sizeof (MathNode));
+            }
+
+            if (right_branch_node_type == NUMBER && IsZero (right_branch_value)) {
+
+                TreeAllNodesDestruct (&(math_expression_node -> right_branch));
+
+                TreeNodeReplace (math_expression_node, math_expression_node -> right_branch,
+                                 sizeof (MathNode));
+            }
 
             break;
 
         default:
             break;
     }
+
+    return TREE_FUNC_STATUS_OK;
 }
 
 

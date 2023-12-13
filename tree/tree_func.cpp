@@ -77,16 +77,16 @@ TreeNode *TreeNodeCopy (TreeNode *copy_of_math_tree_node, const TreeNode *math_t
         return NULL;
 
     if (!copy_of_math_tree_node)
-        copy_of_math_tree_node = (TreeNode *) calloc (1, sizeof (TreeNode));
+        copy_of_math_tree_node = CreateTreeNode ();
 
     assert (copy_of_math_tree_node);
-fprintf (stderr, "node data");
+
     TreeNodeDataCopy (copy_of_math_tree_node, math_tree_node_for_copy, node_data_size);
-fprintf (stderr, "left branch data");
+
     (copy_of_math_tree_node -> left_branch)  = TreeNodeCopy (math_tree_node_for_copy -> left_branch,
                                                              copy_of_math_tree_node -> left_branch,
                                                              node_data_size);
-fprintf (stderr, "right branch data");
+
     (copy_of_math_tree_node -> right_branch) = TreeNodeCopy (math_tree_node_for_copy -> right_branch,
                                                              copy_of_math_tree_node -> left_branch,
                                                              node_data_size);
