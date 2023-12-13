@@ -12,6 +12,7 @@
 Tree *FindDerivative (const Tree *math_tree_for_take_derivative) {
 
     assert (math_tree_for_take_derivative);
+    assert (math_tree_for_take_derivative -> root);
 
     Tree *derivative_tree = (Tree *) calloc (1, sizeof (Tree));
 
