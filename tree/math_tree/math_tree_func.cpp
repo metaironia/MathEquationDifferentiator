@@ -315,6 +315,7 @@ TreeFuncStatus MathTreeNodeConstantsSimplify (TreeNode *math_expression_node) {
             fprintf (stderr, "NODE TYPE ERROR\n"); //TODO make output to log file
     }
 
+    return TREE_FUNC_STATUS_OK;
 }
 
 TreeFuncStatus MathTreeNodeBinaryOperatorSimplify (TreeNode *math_expression_node) {
@@ -357,6 +358,13 @@ TreeFuncStatus MathTreeNodeBinaryOperatorSimplify (TreeNode *math_expression_nod
             }
 
             break;
+
+        case OPERATOR_MUL:
+
+            if (IsZero (left_branch_value) || IsZero (right_branch_value)) {
+                 
+                TreeNodeReplace (math_expression_node, NUM_ (0), sizeof (MathNode));
+            }
 
         default:
             break;
