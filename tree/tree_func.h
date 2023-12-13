@@ -123,10 +123,14 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
 
 Tree *TreeCopy (const Tree *math_tree_for_copy, Tree *copy_of_math_tree, const size_t node_data_size);
 
-TreeNode *TreeNodeCopy (const TreeNode *math_tree_node_for_copy, const size_t node_data_size);
+TreeNode *TreeNodeCopy (TreeNode *copy_of_math_tree_node, const TreeNode *math_tree_node_for_copy,
+                        const size_t node_data_size);
 
 TreeFuncStatus TreeNodeDataCopy (TreeNode *copy_of_math_tree_node, const TreeNode* math_tree_node,
                                  const size_t node_data_size);
+
+enum TreeFuncStatus TreeNodeReplace (TreeNode *tree_node_for_replace, TreeNode *tree_node_new,
+                                     const size_t node_data_size);
 
 //enum TreeFuncStatus TreeReadFromFile (FILE *file_with_tree, Tree *tree_for_fill);
 

@@ -64,25 +64,31 @@ Tree *TreeCopy (const Tree *math_tree_for_copy, Tree *copy_of_math_tree, const s
 
     TreeCtor (copy_of_math_tree);
 
-    (copy_of_math_tree -> root) = TreeNodeCopy (math_tree_for_copy -> root, node_data_size);
+    (copy_of_math_tree -> root) = TreeNodeCopy (copy_of_math_tree -> root, math_tree_for_copy -> root,
+                                                node_data_size);
 
     return copy_of_math_tree;
 }
 
-TreeNode *TreeNodeCopy (const TreeNode *math_tree_node_for_copy, const size_t node_data_size) {
+TreeNode *TreeNodeCopy (TreeNode *copy_of_math_tree_node, const TreeNode *math_tree_node_for_copy,
+                        const size_t node_data_size) {
 
     if (!math_tree_node_for_copy)
         return NULL;
 
-    TreeNode *copy_of_math_tree_node = (TreeNode *) calloc (1, sizeof (TreeNode));
+    if (!copy_of_math_tree_node)
+        copy_of_math_tree_node = (TreeNode *) calloc (1, sizeof (TreeNode));
+
     assert (copy_of_math_tree_node);
-
+fprintf (stderr, "node data");
     TreeNodeDataCopy (copy_of_math_tree_node, math_tree_node_for_copy, node_data_size);
-
+fprintf (stderr, "left branch data");
     (copy_of_math_tree_node -> left_branch)  = TreeNodeCopy (math_tree_node_for_copy -> left_branch,
+                                                             copy_of_math_tree_node -> left_branch,
                                                              node_data_size);
-
+fprintf (stderr, "right branch data");
     (copy_of_math_tree_node -> right_branch) = TreeNodeCopy (math_tree_node_for_copy -> right_branch,
+                                                             copy_of_math_tree_node -> left_branch,
                                                              node_data_size);
 
     return copy_of_math_tree_node;
@@ -94,9 +100,36 @@ TreeFuncStatus TreeNodeDataCopy (TreeNode *copy_of_math_tree_node, const TreeNod
     assert (copy_of_math_tree_node);
     assert (math_tree_node);
 
-    copy_of_math_tree_node -> data = (TreeElem_t) calloc (1, node_data_size);
+    if (!copy_of_math_tree_node -> data)
+        copy_of_math_tree_node -> data = (TreeElem_t) calloc (1, node_data_size);
+
+    assert (copy_of_math_tree_node -> data);
+    assert (math_tree_node -> data);
 
     memcpy (copy_of_math_tree_node -> data, math_tree_node -> data, node_data_size);
+
+    return TREE_FUNC_STATUS_OK;
+}
+
+enum TreeFuncStatus TreeNodeReplace (TreeNode *tree_node_for_replace, TreeNode *tree_node_new,
+                                     const size_t node_data_size) {
+
+    assert (tree_node_for_replace);
+
+    TREE_NODE_VERIFY (tree_node_for_replace);
+    TREE_NODE_VERIFY (tree_node_new);
+
+    TreeNode *temp_node = NULL;
+
+    temp_node = TreeNodeCopy (temp_node, tree_node_new, node_data_size);
+
+    TreeAllNodesDestruct (&tree_node_for_replace -> left_branch);
+    TreeAllNodesDestruct (&tree_node_for_replace -> right_branch);
+
+    TreeNodeCopy (tree_node_for_replace, temp_node, node_data_size);
+
+    free (temp_node);
+    temp_node = NULL;
 
     return TREE_FUNC_STATUS_OK;
 }
@@ -432,27 +465,6 @@ enum TreeFuncStatus TreeNodeFromPoisonSearch (const TreeNode *tree_node_for_pois
         TreeNodeFromPoisonSearch (tree_node_for_poison_search -> right_branch) == TREE_FUNC_STATUS_FAIL)
 
         return TREE_FUNC_STATUS_FAIL;
-
-    return TREE_FUNC_STATUS_OK;
-}
-
-enum TreeFuncStatus TreeNodeSwap (TreeNode *tree_node_for_swap, TreeNode *tree_node_new) {
-
-    assert (tree_node_for_swap);
-
-    TREE_NODE_VERIFY (tree_node_for_swap);
-    TREE_NODE_VERIFY (tree_node_new);
-
-    TreeNode *temp_node = CreateTreeNode ();
-    memcpy (temp_node, tree_node_new, sizeof (TreeNode));
-
-    TreeAllNodesDestruct (&tree_node_for_swap -> left_branch);
-    TreeAllNodesDestruct (&tree_node_for_swap -> right_branch);
-
-    memcpy (tree_node_for_swap, tree_node_new, sizeof (TreeNode));
-
-    free (tree_node_new);
-    tree_node_new = NULL;
 
     return TREE_FUNC_STATUS_OK;
 }

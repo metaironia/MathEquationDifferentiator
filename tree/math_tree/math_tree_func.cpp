@@ -333,7 +333,10 @@ TreeFuncStatus MathTreeNodeBinaryOperatorSimplify (TreeNode *math_expression_nod
             if (left_branch_node_type == NUMBER && right_branch_node_type == NUMBER) {
 
                 TreeNode *temp_node = NUM_ (left_branch_value + right_branch_value);
-                TreeNodeSwap (math_expression_node, temp_node);
+
+                TreeNodeReplace (math_expression_node, temp_node, sizeof (MathNode));
+
+fprintf (stderr, "after simp %lf\n", math_expression_node -> data -> nodeValue.mathNodeValue);
             }
 
 //            if (left_branch_node_type == NUMBER && IsZero (left_branch_value)) {

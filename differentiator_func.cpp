@@ -39,8 +39,6 @@ TreeNode *FindNodeDerivative (const TreeNode *math_expression_tree_node) {
     if (!math_expression_tree_node)
         return NULL;
 
-fprintf (stderr, "%s", MathNodeTypeToString (math_expression_tree_node));
-
     MathTreeNodeVerify (math_expression_tree_node);
 
     if (math_expression_tree_node -> data -> nodeType == NUMBER)
@@ -80,6 +78,7 @@ fprintf (stderr, "%s", MathNodeTypeToString (math_expression_tree_node));
     }
 
     assert ("UNKNOWN ERROR WHILE TAKING DERIVATIVE\n" && 0);
+
     return NULL;
 }
 

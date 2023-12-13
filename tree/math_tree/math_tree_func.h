@@ -69,5 +69,4 @@ TreeFuncStatus MathTreeNodeConstantsSimplify (TreeNode *math_expression_node);
 
 TreeFuncStatus MathTreeNodeBinaryOperatorSimplify (TreeNode *math_expression_node);
 
-
 #endif
