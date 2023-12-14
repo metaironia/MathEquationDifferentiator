@@ -69,4 +69,8 @@ TreeFuncStatus MathTreeNodeConstantsSimplify (TreeNode *math_expression_node);
 
 TreeFuncStatus MathTreeNodeBinaryOperatorSimplify (TreeNode *math_expression_node);
 
+TreeFuncStatus MathTreeNodeNumAndNumSimplify (TreeNode *node_for_simplify);
+
+TreeFuncStatus MathTreeNodeSmthAndZeroSimplify (TreeNode *node_for_simplify);
+
 #endif

@@ -12,6 +12,16 @@
 
 #include "math_operation.h"
 
+#define BINARY_NUM_NUM_SIMPLIFY(operator, sign)                                                         \
+                            {                                                                           \
+                                TreeNode *temp_node = NUM_ (left_branch_value sign right_branch_value)  \
+                                                                                                        \
+                                TreeNodeReplace (math_expression_node, temp_node, sizeof (MathNode));   \
+                                                                                                        \
+                                free (temp_node);                                                       \
+                            }
+
+
 TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const double node_value,
                               TreeNode *const ptr_left_branch,
                               TreeNode *const ptr_right_branch) {
@@ -292,6 +302,11 @@ unsigned int NodeNumberCheckErrors (const TreeNode *math_expression_node) {
 
 TreeFuncStatus MathTreeNodeConstantsSimplify (TreeNode *math_expression_node) {
 
+    if (math_expression_node -> left_branch == NULL &&
+        math_expression_node -> right_branch == NULL)
+
+        return TREE_FUNC_STATUS_FAIL;
+
     MATH_TREE_NODE_VERIFY (math_expression_node, TREE);
 
     const MathNodeType current_node_type = math_expression_node -> data -> nodeType;
@@ -303,7 +318,7 @@ TreeFuncStatus MathTreeNodeConstantsSimplify (TreeNode *math_expression_node) {
 //            break;
 
         case BINARY_OPERATOR:
-            MathTreeNodeBinaryOperatorSimplify (math_expression_node);
+            return MathTreeNodeBinaryOperatorSimplify (math_expression_node);
             break;
 
         case NUMBER:
@@ -313,65 +328,174 @@ TreeFuncStatus MathTreeNodeConstantsSimplify (TreeNode *math_expression_node) {
         case NODE_TYPE_ERROR:
         default:
             fprintf (stderr, "NODE TYPE ERROR\n"); //TODO make output to log file
+            return TREE_FUNC_STATUS_FAIL;
     }
 
-    return TREE_FUNC_STATUS_OK;
+    if (MathTreeNodeConstantsSimplify (math_expression_node -> left_branch) == TREE_FUNC_STATUS_OK)
+        return TREE_FUNC_STATUS_OK;
+
+    if (MathTreeNodeConstantsSimplify (math_expression_node -> right_branch) == TREE_FUNC_STATUS_OK)
+        return TREE_FUNC_STATUS_OK;
+
+    return TREE_FUNC_STATUS_FAIL;
 }
 
 TreeFuncStatus MathTreeNodeBinaryOperatorSimplify (TreeNode *math_expression_node) {
 
     MATH_TREE_NODE_VERIFY (math_expression_node, TREE);
 
-    const MathNodeOperator current_node_operator = (math_expression_node -> data -> nodeValue).mathOperator;
-
     const MathNodeType left_branch_node_type = (math_expression_node -> left_branch -> data -> nodeType);
     const MathNodeType right_branch_node_type = (math_expression_node -> right_branch -> data -> nodeType);
 
-    double left_branch_value = (math_expression_node -> left_branch -> data -> nodeValue).mathNodeValue;
-    double right_branch_value = (math_expression_node -> right_branch -> data -> nodeValue).mathNodeValue;
+    const double left_branch_value = (math_expression_node -> left_branch -> data -> nodeValue).mathNodeValue;
 
-    switch (current_node_operator) {       //TODO fix architecture of if-switch
+    const double right_branch_value = (math_expression_node -> right_branch -> data -> nodeValue).mathNodeValue;
+
+    if (left_branch_node_type == NUMBER && right_branch_node_type == NUMBER) {
+
+        MathTreeNodeNumAndNumSimplify (math_expression_node);
+        return TREE_FUNC_STATUS_OK;
+    }
+
+    if ((left_branch_node_type  == NUMBER && IsZero (left_branch_value)) ||
+        (right_branch_node_type == NUMBER && IsZero (right_branch_value))) {
+
+        MathTreeNodeSmthAndZeroSimplify (math_expression_node);
+        return TREE_FUNC_STATUS_OK;
+    }
+
+    return TREE_FUNC_STATUS_FAIL;
+}
+
+TreeFuncStatus MathTreeNodeNumAndNumSimplify (TreeNode *node_for_simplify) {
+
+    assert (node_for_simplify);
+
+    assert (node_for_simplify -> left_branch);
+    assert (node_for_simplify -> right_branch);
+
+    assert (node_for_simplify -> left_branch -> data);
+    assert (node_for_simplify -> right_branch -> data);
+
+    const double left_branch_value = (node_for_simplify -> left_branch -> data -> nodeValue).mathNodeValue;
+    const double right_branch_value = (node_for_simplify -> right_branch -> data -> nodeValue).mathNodeValue;
+
+    double value_after_simplify = NAN;
+
+    switch ((node_for_simplify -> data -> nodeValue).mathOperator) {
 
         case OPERATOR_ADD:
-            if (left_branch_node_type == NUMBER && right_branch_node_type == NUMBER) {
+            value_after_simplify = left_branch_value + right_branch_value;
+            break;
 
-                TreeNode *temp_node = NUM_ (left_branch_value + right_branch_value);
-
-                TreeNodeReplace (math_expression_node, temp_node, sizeof (MathNode));
-
-            }
-
-            if (left_branch_node_type == NUMBER && IsZero (left_branch_value)) {
-
-                TreeAllNodesDestruct (&(math_expression_node -> left_branch));
-
-                TreeNodeReplace (math_expression_node, math_expression_node -> left_branch,
-                                 sizeof (MathNode));
-            }
-
-            if (right_branch_node_type == NUMBER && IsZero (right_branch_value)) {
-
-                TreeAllNodesDestruct (&(math_expression_node -> right_branch));
-
-                TreeNodeReplace (math_expression_node, math_expression_node -> right_branch,
-                                 sizeof (MathNode));
-            }
-
+        case OPERATOR_SUB:
+            value_after_simplify = left_branch_value - right_branch_value;
             break;
 
         case OPERATOR_MUL:
+            value_after_simplify = left_branch_value * right_branch_value;
+            break;
 
-            if (IsZero (left_branch_value) || IsZero (right_branch_value)) {
-                 
-                TreeNodeReplace (math_expression_node, NUM_ (0), sizeof (MathNode));
+        case OPERATOR_DIV:
+            if (!IsZero (right_branch_value))
+                value_after_simplify = left_branch_value / right_branch_value;
+
+            else {
+
+                fprintf (stderr, "ERROR IN BINARY DIV SIMPLIFY (division by 0)");
+                return TREE_FUNC_STATUS_FAIL;
             }
 
-        default:
             break;
+
+        case OPERATOR_POW:
+            value_after_simplify = pow (left_branch_value, right_branch_value);
+            break;
+
+        case OPERATOR_SIN:
+        case OPERATOR_COS:
+        case OPERATOR_LN:
+        default:
+            fprintf (stderr, "ERROR IN TYPE WHILST BINARY CONSTS SIMPLIFY\n");
+            return TREE_FUNC_STATUS_FAIL;
+
     }
+
+    TreeNode *temp_node = NUM_ (value_after_simplify);
+
+    TreeNodeReplace (node_for_simplify, temp_node, sizeof (MathNode));
+
+    free (temp_node);
 
     return TREE_FUNC_STATUS_OK;
 }
 
+TreeFuncStatus MathTreeNodeSmthAndZeroSimplify (TreeNode *node_for_simplify) {
+
+    assert (node_for_simplify);
+
+    assert (node_for_simplify -> left_branch);
+    assert (node_for_simplify -> right_branch);
+
+    assert (node_for_simplify -> left_branch -> data);
+    assert (node_for_simplify -> right_branch -> data);
+
+    TreeNode **branch_non_zero_ptr = NULL;
+    TreeNextBranch branch_non_zero = NODE_NO_BRANCH;
+
+    if (node_for_simplify -> left_branch -> data -> nodeType == NUMBER &&
+        IsZero ((node_for_simplify -> left_branch -> data -> nodeValue).mathNodeValue)) {
+
+        branch_non_zero_ptr = &(node_for_simplify -> right_branch);
+        branch_non_zero     = NODE_RIGHT_BRANCH;
+    }
+
+    if (node_for_simplify -> right_branch -> data -> nodeType == NUMBER &&
+        IsZero ((node_for_simplify -> right_branch -> data -> nodeValue).mathNodeValue)) {
+
+        branch_non_zero_ptr = &(node_for_simplify -> left_branch);
+        branch_non_zero     = NODE_LEFT_BRANCH;
+    }
+
+    if (!branch_non_zero_ptr || branch_non_zero == NODE_NO_BRANCH) {
+
+        fprintf (stderr, "UNKNOWN ERROR IN BINARY ZERO SIMPLIFY (zero child nodes wasn't found)");
+        return TREE_FUNC_STATUS_FAIL;
+    }
+
+    TreeNode *temp_node = NULL;
+
+    switch ((node_for_simplify -> data -> nodeValue).mathOperator) {
+
+        case OPERATOR_SUB:
+            if (branch_non_zero == NODE_RIGHT_BRANCH)
+                return TREE_FUNC_STATUS_OK;
+        //fallthrough
+        case OPERATOR_ADD:
+            temp_node = TreeNodeCopy (temp_node, *branch_non_zero_ptr, sizeof (MathNode));
+            break;
+
+        case OPERATOR_DIV:
+            if (branch_non_zero == NODE_LEFT_BRANCH) {
+
+                fprintf (stderr, "ERROR IN BINARY DIV SIMPLIFY (division by 0)");
+                return TREE_FUNC_STATUS_FAIL;
+            }
+        //fallthrough
+        case OPERATOR_MUL:
+            temp_node = NUM_ (0);
+            break;
+
+        default:
+            fprintf (stderr, "UNKNOWN ERROR IN BINARY ZERO SIMPLIFY (node type wasn't found)");
+            return TREE_FUNC_STATUS_OK;
+    }
+
+    TreeNodeReplace (node_for_simplify, temp_node, sizeof (MathNode));
+
+    free (temp_node);
+
+    return TREE_FUNC_STATUS_OK;
+}
 
 

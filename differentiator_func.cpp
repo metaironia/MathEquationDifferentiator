@@ -9,6 +9,7 @@
 #include "differentiator_func.h"
 #include "differentiator_commands.h"
 
+
 Tree *FindDerivative (const Tree *math_tree_for_take_derivative) {
 
     assert (math_tree_for_take_derivative);
