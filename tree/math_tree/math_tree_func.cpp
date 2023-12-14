@@ -12,15 +12,6 @@
 
 #include "math_operation.h"
 
-#define BINARY_NUM_NUM_SIMPLIFY(operator, sign)                                                         \
-                            {                                                                           \
-                                TreeNode *temp_node = NUM_ (left_branch_value sign right_branch_value)  \
-                                                                                                        \
-                                TreeNodeReplace (math_expression_node, temp_node, sizeof (MathNode));   \
-                                                                                                        \
-                                free (temp_node);                                                       \
-                            }
-
 
 TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const double node_value,
                               TreeNode *const ptr_left_branch,

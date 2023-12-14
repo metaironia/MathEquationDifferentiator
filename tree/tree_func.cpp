@@ -83,12 +83,12 @@ TreeNode *TreeNodeCopy (TreeNode *copy_of_math_tree_node, const TreeNode *math_t
 
     TreeNodeDataCopy (copy_of_math_tree_node, math_tree_node_for_copy, node_data_size);
 
-    (copy_of_math_tree_node -> left_branch)  = TreeNodeCopy (math_tree_node_for_copy -> left_branch,
-                                                             copy_of_math_tree_node -> left_branch,
+    (copy_of_math_tree_node -> left_branch)  = TreeNodeCopy (copy_of_math_tree_node -> left_branch,
+                                                             math_tree_node_for_copy -> left_branch,
                                                              node_data_size);
 
-    (copy_of_math_tree_node -> right_branch) = TreeNodeCopy (math_tree_node_for_copy -> right_branch,
-                                                             copy_of_math_tree_node -> left_branch,
+    (copy_of_math_tree_node -> right_branch) = TreeNodeCopy (copy_of_math_tree_node -> right_branch,
+                                                             math_tree_node_for_copy -> right_branch,
                                                              node_data_size);
 
     return copy_of_math_tree_node;
