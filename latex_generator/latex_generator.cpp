@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "../tree/tree_func.h"
 #include "../tree/tree_log.h"
@@ -115,7 +116,7 @@ LatexFuncStatus LatexEnd (FILE *latex_file) {
     return LATEX_FUNC_STATUS_OK;
 }
 
-LatexFuncStatus LatexFormulaCreate (FILE *latex_file, Tree *math_tree) {
+LatexFuncStatus LatexFormulaCreate (FILE *latex_file, const Tree *math_tree) {
 
     assert (latex_file);
 
@@ -146,18 +147,19 @@ LatexFuncStatus LatexFormulaEnd (FILE *latex_file) {
     return LATEX_FUNC_STATUS_OK;
 }
 
-LatexFuncStatus LatexFormulaMainBodyCreate (FILE *latex_file, Tree *math_tree) {
+LatexFuncStatus LatexFormulaMainBodyCreate (FILE *latex_file, const Tree *math_tree) {
 
     assert (latex_file);
 
     MATH_TREE_VERIFY (math_tree, LATEX);
 
-    LatexFormulaNodePrint (latex_file, math_tree -> root);
+    LatexFormulaNodeDataPrint (latex_file, math_tree -> root, OPERATOR_ADD);
 
     return LATEX_FUNC_STATUS_OK;
 }
 
-LatexFuncStatus LatexFormulaNodePrint (FILE *latex_file, TreeNode *math_tree_node) {
+LatexFuncStatus LatexFormulaNodeDataPrint (FILE *latex_file, const TreeNode *math_tree_node,
+                                           const MathNodeOperator parent_operator) {
 
     assert (latex_file);
 
@@ -191,103 +193,77 @@ LatexFuncStatus LatexFormulaNodePrint (FILE *latex_file, TreeNode *math_tree_nod
 
     MathNodeOperator current_node_operator = (math_tree_node -> data -> nodeValue).mathOperator;
 
+    char before_expression[MAX_WORD_LENGTH]  = "";
+    char between_expression[MAX_WORD_LENGTH] = "";
+    char after_expression[MAX_WORD_LENGTH]   = "";
+
     switch (current_node_operator) {
 
-        case OPERATOR_ADD: {
-
-            fprintf (latex_file, "(");
-
-            LatexFormulaNodePrint (latex_file, math_tree_node -> left_branch);
-
-            fprintf (latex_file, "+");
-
-            LatexFormulaNodePrint (latex_file, math_tree_node -> right_branch);
-
-            fprintf (latex_file, ")");
-
+        case OPERATOR_ADD:
+            strncpy (between_expression, "+", MAX_WORD_LENGTH);
             break;
-        }
 
-        case OPERATOR_SUB: {
-
-            fprintf (latex_file, "(");
-
-            LatexFormulaNodePrint (latex_file, math_tree_node -> left_branch);
-
-            fprintf (latex_file, "-");
-
-            LatexFormulaNodePrint (latex_file, math_tree_node -> right_branch);
-
-            fprintf (latex_file, ")");
-
+        case OPERATOR_SUB:
+            strncpy (between_expression, "-", MAX_WORD_LENGTH);
             break;
-        }
 
-        case OPERATOR_DIV: {
-
-            fprintf (latex_file, "\\frac{");
-
-            LatexFormulaNodePrint (latex_file, math_tree_node -> left_branch);
-
-            fprintf (latex_file, "}{");
-
-            LatexFormulaNodePrint (latex_file, math_tree_node -> right_branch);
-
-            fprintf (latex_file, "}");
-
+        case OPERATOR_DIV:
+            strncpy (before_expression, "\\frac{", MAX_WORD_LENGTH);
+            strncpy (between_expression, "}{", MAX_WORD_LENGTH);
+            strncpy (after_expression, "}", MAX_WORD_LENGTH);
             break;
-        }
 
-        case OPERATOR_MUL: {
-
-            fprintf (latex_file, "(");
-
-            LatexFormulaNodePrint (latex_file, math_tree_node -> left_branch);
-
-            fprintf (latex_file, "*");
-
-            LatexFormulaNodePrint (latex_file, math_tree_node -> right_branch);
-
-            fprintf (latex_file, ")");
-
+        case OPERATOR_MUL:
+            strncpy (between_expression, "\\cdot", MAX_WORD_LENGTH);
             break;
-        }
 
-        case OPERATOR_POW: {
-
-            fprintf (latex_file, "(");
-
-            LatexFormulaNodePrint (latex_file, math_tree_node -> left_branch);
-
-            fprintf (latex_file, "^{");
-
-            LatexFormulaNodePrint (latex_file, math_tree_node -> right_branch);
-
-            fprintf (latex_file, "})");
-
+        case OPERATOR_POW:
+            strncpy (between_expression, "^{", MAX_WORD_LENGTH);
+            strncpy (after_expression, "}", MAX_WORD_LENGTH);
             break;
-        }
 
-        case OPERATOR_LN: {
-
-            fprintf (latex_file, "\\ln{");
-
-            LatexFormulaNodePrint (latex_file, math_tree_node -> left_branch);
-
-            fprintf (latex_file, "}");
-
+        case OPERATOR_LN:
+            strncpy (before_expression, "\\ln{", MAX_WORD_LENGTH);
+            strncpy (after_expression, "}", MAX_WORD_LENGTH);
             break;
-        }
-
 
         default:
-
-            fprintf (latex_file, "ERROR");
+            fprintf (latex_file, "ERROR WHILST LATEX GENERATION\n");
             return LATEX_FUNC_STATUS_FAIL;
             break;
     }
 
+    LatexExpressionPrint (latex_file, math_tree_node, before_expression,
+                                                      between_expression,
+                                                      after_expression);
+
     return LATEX_FUNC_STATUS_OK;
 }
 
+LatexFuncStatus LatexExpressionPrint (FILE *latex_file,
+                                      const TreeNode *math_tree_node,
+                                      const char *before_first_expression,
+                                      const char *between_expressions,
+                                      const char *after_second_expression) {
+
+    assert (math_tree_node);
+    assert (before_first_expression);
+    assert (between_expressions);
+    assert (after_second_expression);
+
+    MathNodeOperator parent_operator = (math_tree_node -> data -> nodeValue).mathOperator;
+
+
+    fprintf (latex_file, "%s", before_first_expression);
+
+    LatexFormulaNodeDataPrint (latex_file, math_tree_node -> left_branch, parent_operator);
+
+    fprintf (latex_file, "%s", between_expressions);
+
+    LatexFormulaNodeDataPrint (latex_file, math_tree_node -> right_branch, parent_operator);
+
+    fprintf (latex_file, "%s", after_second_expression);
+
+    return LATEX_FUNC_STATUS_OK;
+}
 
