@@ -159,7 +159,7 @@ LatexFuncStatus LatexFormulaMainBodyCreate (FILE *latex_file, const Tree *math_t
 }
 
 LatexFuncStatus LatexFormulaNodeDataPrint (FILE *latex_file, const TreeNode *math_tree_node,
-                                           const MathNodeOperator parent_operator) {
+                                           const MathNodeOperator parent_node_operator) {
 
     assert (latex_file);
 
@@ -168,34 +168,139 @@ LatexFuncStatus LatexFormulaNodeDataPrint (FILE *latex_file, const TreeNode *mat
 
     MATH_TREE_NODE_VERIFY (math_tree_node, LATEX);
 
-    MathNodeType current_node_type = math_tree_node -> data -> nodeType;
+    MathNodeType latex_var_or_num_status = LatexVarOrNumPrint (latex_file, math_tree_node);
 
-    switch (current_node_type) {
+    if (latex_var_or_num_status == NUMBER || latex_var_or_num_status == VARIABLE)
+        return LATEX_FUNC_STATUS_OK;
 
-        case NUMBER:
-            fprintf (latex_file, "%.2lf", (math_tree_node -> data -> nodeValue).mathNodeValue);
-            return LATEX_FUNC_STATUS_OK;
-            break;
-
-        case VARIABLE:
-            fprintf (latex_file, "x");
-            return LATEX_FUNC_STATUS_OK;
-            break;
-
-        case NODE_TYPE_ERROR:
-            fprintf (stderr, "NODE TYPE ERROR");
-            return LATEX_FUNC_STATUS_FAIL;
-            break;
-
-        default:
-            break;
-    }
+    if (latex_var_or_num_status == NODE_TYPE_ERROR)
+        return LATEX_FUNC_STATUS_FAIL;
 
     MathNodeOperator current_node_operator = (math_tree_node -> data -> nodeValue).mathOperator;
 
     char before_expression[MAX_WORD_LENGTH]  = "";
     char between_expression[MAX_WORD_LENGTH] = "";
     char after_expression[MAX_WORD_LENGTH]   = "";
+
+    LatexSetBeforeExpression (before_expression, current_node_operator, parent_node_operator);
+
+    LatexSetMainExpression   (before_expression,
+                              between_expression,
+                              after_expression,  current_node_operator);
+
+    LatexSetAfterExpression  (after_expression,  current_node_operator, parent_node_operator);
+
+    LatexExpressionPrint (latex_file, math_tree_node, before_expression,
+                                                      between_expression,
+                                                      after_expression);
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+MathNodeType LatexVarOrNumPrint (FILE *latex_file, const TreeNode *math_tree_node) {
+
+    assert (latex_file);
+
+    if (MathTreeNodeVerify (math_tree_node) != 0)
+        return NODE_TYPE_ERROR;
+
+    MathNodeType current_node_type = math_tree_node -> data -> nodeType;
+
+    switch (current_node_type) {
+
+        case NUMBER:
+            fprintf (latex_file, "%.2lf", (math_tree_node -> data -> nodeValue).mathNodeValue);
+            return NUMBER;
+            break;
+
+        case VARIABLE:
+            fprintf (latex_file, "x");
+            return VARIABLE;
+            break;
+
+        case NODE_TYPE_ERROR:
+            fprintf (stderr, "NODE TYPE ERROR");
+            break;
+
+        case BINARY_OPERATOR:
+        case UNARY_OPERATOR:
+            return current_node_type;
+
+        default:
+            break;
+    }
+
+    return NODE_TYPE_ERROR;
+}
+
+LatexFuncStatus LatexSetBeforeExpression (char *before_expression,
+                                          const MathNodeOperator current_node_operator,
+                                          const MathNodeOperator parent_node_operator) {
+
+    assert (before_expression);
+
+    switch (current_node_operator) {
+
+        case OPERATOR_ADD:
+        case OPERATOR_SUB:
+            if (parent_node_operator == OPERATOR_MUL) {
+
+                strncpy (before_expression, "(", MAX_WORD_LENGTH);
+                break;
+            }
+        //fallthrough
+        case OPERATOR_MUL:
+        case OPERATOR_DIV:
+            if (parent_node_operator == OPERATOR_POW)
+                strncpy (before_expression, "(", MAX_WORD_LENGTH);
+
+            break;
+
+        default:
+            break;
+    }
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexSetAfterExpression (char *after_expression,
+                                         const MathNodeOperator current_node_operator,
+                                         const MathNodeOperator parent_node_operator) {
+
+    assert (after_expression);
+
+    switch (current_node_operator) {
+
+        case OPERATOR_ADD:
+        case OPERATOR_SUB:
+            if (parent_node_operator == OPERATOR_MUL) {
+
+                strncat (after_expression, ")", MAX_WORD_LENGTH);
+                break;
+            }
+        //fallthrough
+        case OPERATOR_MUL:
+        case OPERATOR_DIV:
+            if (parent_node_operator == OPERATOR_POW)
+                strncat (after_expression, ")", MAX_WORD_LENGTH);
+
+            break;
+
+        default:
+            break;
+    }
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexSetMainExpression (char *before_expression,
+                                        char *between_expression,
+                                        char *after_expression,
+                                        const MathNodeOperator current_node_operator) {
+
+    assert (before_expression);
+    assert (between_expression);
+    assert (after_expression);
 
     switch (current_node_operator) {
 
@@ -208,9 +313,9 @@ LatexFuncStatus LatexFormulaNodeDataPrint (FILE *latex_file, const TreeNode *mat
             break;
 
         case OPERATOR_DIV:
-            strncpy (before_expression, "\\frac{", MAX_WORD_LENGTH);
-            strncpy (between_expression, "}{", MAX_WORD_LENGTH);
-            strncpy (after_expression, "}", MAX_WORD_LENGTH);
+            strncat (before_expression,  "\\frac{", MAX_WORD_LENGTH / 2);
+            strncpy (between_expression, "}{",      MAX_WORD_LENGTH);
+            strncpy (after_expression,   "}",       MAX_WORD_LENGTH / 2);
             break;
 
         case OPERATOR_MUL:
@@ -218,24 +323,21 @@ LatexFuncStatus LatexFormulaNodeDataPrint (FILE *latex_file, const TreeNode *mat
             break;
 
         case OPERATOR_POW:
-            strncpy (between_expression, "^{", MAX_WORD_LENGTH);
-            strncpy (after_expression, "}", MAX_WORD_LENGTH);
+            strncat (between_expression, "^{", MAX_WORD_LENGTH / 2);
+            strncpy (after_expression,   "}",  MAX_WORD_LENGTH / 2);
             break;
 
         case OPERATOR_LN:
-            strncpy (before_expression, "\\ln{", MAX_WORD_LENGTH);
-            strncpy (after_expression, "}", MAX_WORD_LENGTH);
+            strncat (before_expression, "\\ln{", MAX_WORD_LENGTH / 2);
+            strncpy (after_expression,  "}",     MAX_WORD_LENGTH / 2);
             break;
 
         default:
-            fprintf (latex_file, "ERROR WHILST LATEX GENERATION\n");
+            fprintf (stderr, "ERROR WHILST LATEX GENERATION\n");
             return LATEX_FUNC_STATUS_FAIL;
             break;
     }
 
-    LatexExpressionPrint (latex_file, math_tree_node, before_expression,
-                                                      between_expression,
-                                                      after_expression);
 
     return LATEX_FUNC_STATUS_OK;
 }
@@ -246,6 +348,7 @@ LatexFuncStatus LatexExpressionPrint (FILE *latex_file,
                                       const char *between_expressions,
                                       const char *after_second_expression) {
 
+    assert (latex_file);
     assert (math_tree_node);
     assert (before_first_expression);
     assert (between_expressions);

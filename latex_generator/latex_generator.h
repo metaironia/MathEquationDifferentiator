@@ -30,4 +30,19 @@ LatexFuncStatus LatexExpressionPrint (FILE *latex_file,
                                       const char *between_expressions,
                                       const char *after_second_expression);
 
+MathNodeType LatexVarOrNumPrint (FILE *latex_file, const TreeNode *math_tree_node);
+
+LatexFuncStatus LatexSetBeforeExpression (char *before_expression,
+                                          const MathNodeOperator current_node_operator,
+                                          const MathNodeOperator parent_node_operator);
+
+LatexFuncStatus LatexSetMainExpression (char *before_expression,
+                                        char *between_expression,
+                                        char *after_expression,
+                                        const MathNodeOperator current_node_operator);
+
+LatexFuncStatus LatexSetAfterExpression (char *after_expression,
+                                         const MathNodeOperator current_node_operator,
+                                         const MathNodeOperator parent_node_operator);
+
 #endif
