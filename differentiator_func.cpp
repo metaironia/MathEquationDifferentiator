@@ -67,7 +67,14 @@ TreeNode *FindNodeDerivative (const TreeNode *math_expression_tree_node) {
             return DIV_ (SUB_ (MUL_ (dL, cR), MUL_ (cL, dR)), POW_ (cR, NUM_ (2)));
 
         case OPERATOR_POW:
-            return MUL_ (cCUR, ADD_ (MUL_ (dR, LN_ (cL)), MUL_ (cR, LN_ (dL))));
+
+            if (math_expression_tree_node -> right_branch -> data -> nodeType == NUMBER)
+                return MUL_ (cR, POW_ (cL, SUB_ (cR, NUM_ (1))));
+
+            if (math_expression_tree_node -> left_branch -> data -> nodeType == NUMBER)
+                return MUL_ (POW_ (cL, cR), MUL_ (LN_ (cL), dR));
+
+            return MUL_ (cCUR, ADD_ (MUL_ (dR, LN_ (cL)), DIV_ (MUL_ (cR, dL), cL)));
             break;
 
         case OPERATOR_LN:

@@ -73,4 +73,6 @@ TreeFuncStatus MathTreeNodeNumAndNumSimplify (TreeNode *node_for_simplify);
 
 TreeFuncStatus MathTreeNodeSmthAndZeroSimplify (TreeNode *node_for_simplify);
 
+TreeFuncStatus MathTreeNodeSmthAndOneSimplify (TreeNode *node_for_simplify);
+
 #endif
