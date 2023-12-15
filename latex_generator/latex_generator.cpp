@@ -1,6 +1,8 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
+#include <stdlib.h>
 
 #include "../tree/tree_func.h"
 #include "../tree/tree_log.h"
@@ -9,7 +11,31 @@
 #include "../tree/math_tree/math_tree_node_data.h"
 
 #include "latex_generator.h"
+#include "latex_rofls.h"
 
+FILE *latex_file_output = CreateLatexFile (LATEX_FILE_NAME);
+
+FILE *CreateLatexFile (const char *log_file_name) {
+
+    assert (log_file_name);
+
+    srand ((int) time (0));
+
+    FILE *log_file_ptr = fopen (log_file_name, "w");
+    assert (log_file_ptr);
+
+    atexit (CloseLogFile);
+
+    return log_file_ptr;
+}
+
+void CloseLatexFile (void) {
+
+    if (latex_file_output)
+        fclose (latex_file_output);
+
+    latex_file_output = NULL;
+}
 
 LatexFuncStatus LatexBegin (FILE* latex_file) {
 
@@ -116,14 +142,14 @@ LatexFuncStatus LatexEnd (FILE *latex_file) {
     return LATEX_FUNC_STATUS_OK;
 }
 
-LatexFuncStatus LatexFormulaCreate (FILE *latex_file, const Tree *math_tree) {
+LatexFuncStatus LatexFormulaCreate (FILE *latex_file, const TreeNode *math_tree_node) {
 
     assert (latex_file);
 
-    MATH_TREE_VERIFY (math_tree, LATEX);
+    MATH_TREE_NODE_VERIFY (math_tree_node, LATEX);
 
     LatexFormulaBegin          (latex_file);
-    LatexFormulaMainBodyCreate (latex_file, math_tree);
+    LatexFormulaMainBodyCreate (latex_file, math_tree_node);
     LatexFormulaEnd            (latex_file);
 
     return LATEX_FUNC_STATUS_OK;
@@ -147,13 +173,13 @@ LatexFuncStatus LatexFormulaEnd (FILE *latex_file) {
     return LATEX_FUNC_STATUS_OK;
 }
 
-LatexFuncStatus LatexFormulaMainBodyCreate (FILE *latex_file, const Tree *math_tree) {
+LatexFuncStatus LatexFormulaMainBodyCreate (FILE *latex_file, const TreeNode *math_tree_node) {
 
     assert (latex_file);
 
-    MATH_TREE_VERIFY (math_tree, LATEX);
+    MATH_TREE_NODE_VERIFY (math_tree_node, LATEX);
 
-    LatexFormulaNodeDataPrint (latex_file, math_tree -> root, OPERATOR_ADD);
+    LatexFormulaNodeDataPrint (latex_file, math_tree_node, OPERATOR_ADD);
 
     return LATEX_FUNC_STATUS_OK;
 }
@@ -209,7 +235,7 @@ MathNodeType LatexVarOrNumPrint (FILE *latex_file, const TreeNode *math_tree_nod
     switch (current_node_type) {
 
         case NUMBER:
-            fprintf (latex_file, "%.2lf", (math_tree_node -> data -> nodeValue).mathNodeValue);
+            fprintf (latex_file, "%.2lg", (math_tree_node -> data -> nodeValue).mathNodeValue);
             return NUMBER;
             break;
 
@@ -369,4 +395,79 @@ LatexFuncStatus LatexExpressionPrint (FILE *latex_file,
 
     return LATEX_FUNC_STATUS_OK;
 }
+
+LatexFuncStatus LatexSimplifyQuotationPrint (FILE *latex_file) {
+
+    assert (latex_file);
+
+    unsigned int rand_index = rand () % LATEX_SIMPLIFY_QUOTATION_NUMBER;
+
+    fprintf (latex_file, "%s", LATEX_SIMPLIFY_QUOTATIONS[rand_index]);
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexSeriousQuotationPrint (FILE *latex_file) {
+
+    assert (latex_file);
+
+    unsigned int rand_index = rand () % LATEX_SERIOUS_QUOTATION_NUMBER;
+
+    fprintf (latex_file, "%s", LATEX_SERIOUS_QUOTATIONS[rand_index]);
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexDerivativeQuotationPrint (FILE *latex_file) {
+
+    assert (latex_file);
+
+    unsigned int rand_index = rand () % LATEX_DERIVATIVE_QUOTATION_NUMBER;
+
+    fprintf (latex_file, "%s", LATEX_DERIVATIVE_QUOTATIONS[rand_index]);
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+//LatexFuncStatus LatexPictureBegin (FILE *latex_file) {
+//
+//    assert (latex_file);
+//
+//    fprintf (latex_file, "\\begin{tikzpicture}\n"
+//                         "\\begin{axis}[\n"
+//                         "x=1.7cm,\n"
+//                         "y=0.26cm,\n"
+//                         "grid=both,\n"
+//                         "grid style={line width=.1pt, draw=gray!10},\n"
+//                         "major grid style={line width=.2pt,draw=gray!50},\n"
+//                         "axis lines=middle,\n"
+//                         "axis line style={line width = .7pt},\n"
+//                         "minor tick num=5,\n"
+//                         "xmin=-3,\n"
+//                         "xmax=3.9,\n"
+//                         "ymin=-36,\n"
+//                         "ymax=48,\n"
+//                         "xtick={-3,-2,...,4},\n"
+//                         "ytick={-35,-30,...,50},\n"
+//                         "x label style={at={(axis cs:(3.8,2.3)},anchor=north},\n"
+//                         "xlabel={\large $x$},\n"
+//                         "y label style={at={(axis cs:(0.2,48.4)},anchor=north},\n"
+//                         "ylabel={\large $y$},\n"
+//                         "clip mode=individual,\n"
+//                         "legend style={at={(axis cs:(3.86,44)}}\n"
+//                         "]\n");
+//
+//    return LATEX_FUNC_STATUS_OK;
+//}
+//
+//LatexFuncStatus LatexPictureEnd (FILE *latex_file) {
+//
+//    assert (latex_file);
+//
+//    fprintf (latex_file, "\\end{axis}\n"
+//                         "\\end{tikzpicture}\n"
+//                         "\\end{center}\n");
+//
+//    return LATEX_FUNC_STATUS_OK;
+//}
 

@@ -32,6 +32,14 @@
                                     }                                               \
                                 }
 
+#define MATH_TREE_NODE_VERIFY_PTR_FUNC(math_tree_node)                                  \
+                                {                                                       \
+                                    if (MathTreeNodeVerify (math_tree_node) != 0) {     \
+                                                                                        \
+                                        return NULL;                                    \
+                                    }                                                   \
+                                }
+
 const int MAX_NUMBER_LENGTH = 30;
 
 MathNodeType IsOperatorUnaryOrBinary (const MathNodeOperator node_operator_to_check);

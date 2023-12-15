@@ -12,7 +12,6 @@
 
 #include "math_operation.h"
 
-
 TreeNode *CreateMathTreeNode (const MathNodeType type_of_node, const double node_value,
                               TreeNode *const ptr_left_branch,
                               TreeNode *const ptr_right_branch) {
@@ -119,7 +118,7 @@ const char *NumberToString (const double number) {
 
     memset (number_to_string, 0, MAX_NUMBER_LENGTH + 1);
 
-    sprintf (number_to_string, "%.3lf", number);
+    sprintf (number_to_string, "%.3lg", number);
 
     return number_to_string;
 }
@@ -482,48 +481,8 @@ TreeFuncStatus MathTreeNodeNumAndNumSimplify (TreeNode *node_for_simplify) {
 
     double value_after_simplify = NAN;
 
-    switch ((node_for_simplify -> data -> nodeValue).mathOperator) {
-
-        case OPERATOR_ADD:
-            value_after_simplify = left_branch_value + right_branch_value;
-            break;
-
-        case OPERATOR_SUB:
-            value_after_simplify = left_branch_value - right_branch_value;
-            break;
-
-        case OPERATOR_MUL:
-            value_after_simplify = left_branch_value * right_branch_value;
-            break;
-
-        case OPERATOR_DIV:
-            if (!IsZero (right_branch_value))
-                value_after_simplify = left_branch_value / right_branch_value;
-
-            else {
-
-                fprintf (stderr, "ERROR IN BINARY DIV SIMPLIFY (division by 0)\n");
-                return TREE_FUNC_STATUS_FAIL;
-            }
-
-            break;
-
-        case OPERATOR_POW:
-            value_after_simplify = pow (left_branch_value, right_branch_value);
-
-            if (isnan (value_after_simplify))
-                fprintf (stderr, "ERROR IN BINARY POW SIMPLIFY (power is equal or less than 0)\n");
-
-            break;
-
-        case OPERATOR_SIN:
-        case OPERATOR_COS:
-        case OPERATOR_LN:
-        default:
-            fprintf (stderr, "ERROR IN TYPE WHILST BINARY CONSTS SIMPLIFY\n");
-            return TREE_FUNC_STATUS_FAIL;
-
-    }
+    value_after_simplify = MathTreeNodeBinaryCompute (left_branch_value, right_branch_value,
+                                                      (node_for_simplify -> data -> nodeValue).mathOperator);
 
     TreeNode *temp_node = NUM_ (value_after_simplify);
 

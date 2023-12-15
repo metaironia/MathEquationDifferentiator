@@ -1,6 +1,8 @@
 #include <assert.h>
 #include <string.h>
 
+#include "latex_generator/latex_generator.h"
+
 #include "tree/tree_func.h"
 #include "tree/tree_log.h"
 
@@ -9,6 +11,7 @@
 #include "differentiator_func.h"
 #include "differentiator_commands.h"
 
+extern FILE *latex_file_output;
 
 Tree *FindDerivative (const Tree *math_tree_for_take_derivative) {
 
@@ -41,44 +44,65 @@ TreeNode *FindNodeDerivative (const TreeNode *math_expression_tree_node) {
     if (!math_expression_tree_node)
         return NULL;
 
-    MathTreeNodeVerify (math_expression_tree_node);
+    MATH_TREE_NODE_VERIFY_PTR_FUNC (math_expression_tree_node);
+
+    LatexSeriousQuotationPrint (latex_file_output);
+
+    LatexFormulaCreate (latex_file_output, math_expression_tree_node);
+
+    LatexDerivativeQuotationPrint (latex_file_output);
+
+    TreeNode *output_node = NULL;
 
     if (math_expression_tree_node -> data -> nodeType == NUMBER)
-        return CreateMathTreeNode (NUMBER, 0, NULL, NULL);
+        output_node = NUM_ (0);
 
     if (math_expression_tree_node -> data -> nodeType == VARIABLE)
-        return CreateMathTreeNode (NUMBER, 1, NULL, NULL);
+        output_node = NUM_ (1);
+
+    if (output_node) {
+
+        LatexFormulaCreate (latex_file_output, output_node);
+        return output_node;
+    }
 
     switch ((math_expression_tree_node -> data -> nodeValue).mathOperator) {
 
         case OPERATOR_ADD:
-            return ADD_ (dL, dR);
+            output_node = ADD_ (dL, dR);
             break;
 
         case OPERATOR_SUB:
-            return SUB_ (dL, dR);
+            output_node = SUB_ (dL, dR);
             break;
 
         case OPERATOR_MUL:
-            return ADD_ (MUL_ (dL, cR), MUL_ (cL, dR));
+            output_node = ADD_ (MUL_ (dL, cR), MUL_ (cL, dR));
             break;
 
         case OPERATOR_DIV:
-            return DIV_ (SUB_ (MUL_ (dL, cR), MUL_ (cL, dR)), POW_ (cR, NUM_ (2)));
+            output_node = DIV_ (SUB_ (MUL_ (dL, cR), MUL_ (cL, dR)), POW_ (cR, NUM_ (2)));
+            break;
 
         case OPERATOR_POW:
 
-            if (math_expression_tree_node -> right_branch -> data -> nodeType == NUMBER)
-                return MUL_ (cR, POW_ (cL, SUB_ (cR, NUM_ (1))));
+            if (math_expression_tree_node -> right_branch -> data -> nodeType == NUMBER) {
 
-            if (math_expression_tree_node -> left_branch -> data -> nodeType == NUMBER)
-                return MUL_ (POW_ (cL, cR), MUL_ (LN_ (cL), dR));
+                output_node = MUL_ (cR, POW_ (cL, SUB_ (cR, NUM_ (1))));
+                break;
+            }
 
-            return MUL_ (cCUR, ADD_ (MUL_ (dR, LN_ (cL)), DIV_ (MUL_ (cR, dL), cL)));
+            if (math_expression_tree_node -> left_branch -> data -> nodeType == NUMBER) {
+
+                output_node = MUL_ (POW_ (cL, cR), MUL_ (LN_ (cL), dR));
+                break;
+            }
+
+            output_node = MUL_ (cCUR, ADD_ (MUL_ (dR, LN_ (cL)), DIV_ (MUL_ (cR, dL), cL)));
             break;
 
         case OPERATOR_LN:
-            return MUL_ (DIV_ (NUM_ (1), cL), dL);
+            output_node = MUL_ (DIV_ (NUM_ (1), cL), dL);
             break;
 
         default:
@@ -86,8 +110,17 @@ TreeNode *FindNodeDerivative (const TreeNode *math_expression_tree_node) {
             return NULL;
     }
 
-    assert ("UNKNOWN ERROR WHILE TAKING DERIVATIVE\n" && 0);
+    if (output_node)
+        LatexFormulaCreate (latex_file_output, output_node);
+    else
+        assert ("UNKNOWN ERROR WHILE TAKING DERIVATIVE\n" && 0);
 
-    return NULL;
+    LatexSimplifyQuotationPrint (latex_file_output);
+
+    while (MathTreeNodeConstantsSimplify (output_node) == TREE_FUNC_STATUS_OK);
+
+    LatexFormulaCreate (latex_file_output, output_node);
+
+    return output_node;
 }
 
