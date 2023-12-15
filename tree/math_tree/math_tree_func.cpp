@@ -171,8 +171,118 @@ const char *MathNodeOperatorToString (const TreeNode *math_tree_node) {
     return NULL;
 }
 
+double MathTreeCompute (const Tree *math_expression_tree, const double variable_value) {
+
+    if (MathTreeVerify (math_expression_tree, __func__) != 0)
+        return NAN;
+
+    return MathTreeNodeCompute (math_expression_tree -> root, variable_value);
+}
+
+double MathTreeNodeCompute (const TreeNode *math_tree_node, const double variable_value) {
+
+    if (!math_tree_node)
+        return 0;
+
+    if (MathTreeNodeVerify (math_tree_node) != 0)
+        return NAN;
+
+    const double left_branch_value  = MathTreeNodeCompute (math_tree_node -> left_branch,
+                                                           variable_value);
+
+    const double right_branch_value = MathTreeNodeCompute (math_tree_node -> right_branch,
+                                                           variable_value);
+
+    return MathTreeNodeComputeOperatorResult (math_tree_node, left_branch_value, right_branch_value,
+                                              variable_value);
+}
+
+double MathTreeNodeComputeOperatorResult (const TreeNode *math_tree_node,
+                                          const double left_branch_node_value,
+                                          const double right_branch_node_value,
+                                          const double variable_value) {
+
+    if (MathTreeNodeVerify (math_tree_node) != 0)
+        return NAN;
+
+    const double math_node_value = (math_tree_node -> data -> nodeValue).mathNodeValue;
+
+    const MathNodeType current_node_type = (math_tree_node -> data -> nodeType);
+    const MathNodeOperator current_node_operator = (math_tree_node -> data -> nodeValue).mathOperator;
+
+    switch (current_node_type) {
+
+        case NUMBER:
+            return math_node_value;
+
+        case VARIABLE:
+            return variable_value;
+
+        case UNARY_OPERATOR:
+            return MathTreeNodeUnaryCompute (left_branch_node_value, current_node_operator);
+
+        case BINARY_OPERATOR:
+            return MathTreeNodeBinaryCompute (left_branch_node_value, right_branch_node_value,
+                                              current_node_operator);
+
+        case NODE_TYPE_ERROR:
+        default:
+            fprintf (stderr, "UNKNOWN ERROR WHILST COMPUTING VARIABLE OR NUMBER\n");
+            return NAN;
+    }
+
+    return NAN;
+}
+
+double MathTreeNodeUnaryCompute (const double left_branch_value,
+                                 const MathNodeOperator current_node_operator) {
+
+    switch (current_node_operator) {
+
+        case OPERATOR_LN:
+            return log (left_branch_value);
+
+        default:
+            break;
+    }
+
+    return NAN;
+}
+
+double MathTreeNodeBinaryCompute (const double left_branch_value, const double right_branch_value,
+                                  const MathNodeOperator current_node_operator) {
+
+    switch (current_node_operator) {
+
+        case OPERATOR_ADD:
+            return left_branch_value + right_branch_value;
+
+        case OPERATOR_SUB:
+            return left_branch_value - right_branch_value;
+
+        case OPERATOR_MUL:
+            return left_branch_value * right_branch_value;
+
+         case OPERATOR_DIV:
+            if (!IsZero (right_branch_value))
+                return left_branch_value / right_branch_value;
+            else
+                break;
+
+        case OPERATOR_POW:
+            return pow (left_branch_value, right_branch_value);
+
+        default:
+            break;
+    }
+
+    return NAN;
+}
+
 unsigned int MathTreeVerify (const Tree *math_expression_tree,
                              const char* name_parent_func) {
+
+    assert (name_parent_func);
 
     unsigned int errors_math_expression_tree = TreeVerify (math_expression_tree, name_parent_func);
 
@@ -338,7 +448,6 @@ TreeFuncStatus MathTreeNodeBinaryOperatorSimplify (TreeNode *math_expression_nod
     const MathNodeType right_branch_node_type = (math_expression_node -> right_branch -> data -> nodeType);
 
     const double left_branch_value = (math_expression_node -> left_branch -> data -> nodeValue).mathNodeValue;
-
     const double right_branch_value = (math_expression_node -> right_branch -> data -> nodeValue).mathNodeValue;
 
     if (left_branch_node_type == NUMBER && right_branch_node_type == NUMBER)

@@ -75,4 +75,19 @@ TreeFuncStatus MathTreeNodeSmthAndZeroSimplify (TreeNode *node_for_simplify);
 
 TreeFuncStatus MathTreeNodeSmthAndOneSimplify (TreeNode *node_for_simplify);
 
+double MathTreeCompute (const Tree *math_expression_tree, const double variable_value);
+
+double MathTreeNodeCompute (const TreeNode *math_tree_node, const double variable_value);
+
+double MathTreeNodeComputeOperatorResult (const TreeNode *math_tree_node,
+                                          const double left_branch_node_value,
+                                          const double right_branch_node_value,
+                                          const double variable_value);
+
+double MathTreeNodeUnaryCompute (const double left_branch_value,
+                                 const MathNodeOperator current_node_operator);
+
+double MathTreeNodeBinaryCompute (const double left_branch_value, const double right_branch_value,
+                                  const MathNodeOperator current_node_operator);
+
 #endif
