@@ -3,15 +3,15 @@
 
 #include "differentiator_func.h"
 
-#define cL         (TreeNodeCopy (NULL, math_expression_tree_node -> left_branch, sizeof (MathNode)))
+#define cL         (TreeNodeCopy (NULL, current_node -> left_branch, sizeof (MathNode)))
 
-#define cR         (TreeNodeCopy (NULL, math_expression_tree_node -> right_branch, sizeof (MathNode)))
+#define cR         (TreeNodeCopy (NULL, current_node -> right_branch, sizeof (MathNode)))
 
-#define cCUR       (TreeNodeCopy (NULL, math_expression_tree_node, sizeof (MathNode)))
+#define cCUR       (TreeNodeCopy (NULL, current_node, sizeof (MathNode)))
 
-#define dL         (FindNodeDerivative (math_expression_tree_node -> left_branch))
+#define dL         (FindNodeDerivative (current_node -> left_branch))
 
-#define dR         (FindNodeDerivative (math_expression_tree_node -> right_branch))
+#define dR         (FindNodeDerivative (current_node -> right_branch))
 
 #define ADD_(...)  (CreateMathTreeNode (BINARY_OPERATOR, OPERATOR_ADD, __VA_ARGS__))
 
@@ -23,8 +23,14 @@
 
 #define POW_(...)  (CreateMathTreeNode (BINARY_OPERATOR, OPERATOR_POW, __VA_ARGS__))
 
-#define NUM_(...)  (CreateMathTreeNode (NUMBER, __VA_ARGS__, NULL, NULL))
+#define SIN_(...)  (CreateMathTreeNode (UNARY_OPERATOR, OPERATOR_SIN, __VA_ARGS__, NULL))
+
+#define COS_(...)  (CreateMathTreeNode (UNARY_OPERATOR, OPERATOR_COS, __VA_ARGS__, NULL))
 
 #define LN_(...)   (CreateMathTreeNode (UNARY_OPERATOR, OPERATOR_LN, __VA_ARGS__, NULL))
+
+#define NUM_(...)  (CreateMathTreeNode (NUMBER, __VA_ARGS__, NULL, NULL))
+
+#define VAR_       (CreateMathTreeNode (VARIABLE, 0, NULL, NULL))
 
 #endif

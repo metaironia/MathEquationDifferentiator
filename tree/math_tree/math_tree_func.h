@@ -4,6 +4,23 @@
 #include "math_tree_node_data.h"
 #include "../tree_func.h"
 
+#define IS_VALUE_EQUAL(val, branch)   (current_node -> branch -> data -> nodeType == NUMBER &&                             \
+                                      IsDoublesEqual ((current_node -> branch -> data -> nodeValue).mathNodeValue, val))
+
+#define NODE_VALUE                    ((current_node -> data -> nodeValue).mathNodeValue)
+
+#define NODE_TYPE                     (current_node -> data -> nodeType)
+
+#define NODE_OPERATOR                 ((current_node -> data -> nodeValue).mathOperator)
+
+#define BRANCH_VALUE(branch)          ((current_node -> branch -> data -> nodeValue).mathNodeValue)
+
+#define BRANCH_TYPE(branch)           ((current_node -> branch -> data -> nodeType))
+
+#define BRANCH_OPERATOR(branch)       ((current_node -> branch -> data -> nodeValue).mathOperator)
+
+
+
 #define MATH_TREE_VERIFY(math_tree, func_type)                                                     \
                                 {                                                       \
                                     if (MathTreeVerify (math_tree, __func__) != 0) {    \
@@ -97,5 +114,15 @@ double MathTreeNodeUnaryCompute (const double left_branch_value,
 
 double MathTreeNodeBinaryCompute (const double left_branch_value, const double right_branch_value,
                                   const MathNodeOperator current_node_operator);
+
+//---------------------------------------------------------------------------------------------
+
+TreeFuncStatus MathTreeNodeRead (FILE *file_for_read_tree, TreeNode **tree_node_for_fill);
+
+TreeFuncStatus MathTreeNodeNilCheck (FILE *file_for_node_nil_check, char *buffer_for_node_check);
+
+TreeFuncStatus MathTreeNodeDataRead (FILE *file_for_read_node_data, TreeNode **tree_node_for_data_read,
+                                     char *buffer_for_read_node_data);
+
 
 #endif
