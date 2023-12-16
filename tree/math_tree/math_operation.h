@@ -47,4 +47,6 @@ int IsDoublesEqual (const double number_1, const double number_2);
 
 int IsDoubleBigger (const double number_1, const double number_2);
 
+unsigned long long Factorial (const unsigned long long number);
+
 #endif
