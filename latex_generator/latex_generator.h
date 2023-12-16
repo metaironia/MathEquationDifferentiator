@@ -7,7 +7,7 @@
 
 #include "../tree/tree_func.h"
 
-const int MAX_WORD_LENGTH = 64;
+const int MAX_STRING_LENGTH = 64;
 
 enum LatexFuncStatus {
 
@@ -33,6 +33,8 @@ LatexFuncStatus LatexFormulaMainBodyCreate (FILE *latex_file, const TreeNode *ma
 
 LatexFuncStatus LatexFormulaNodeDataPrint (FILE *latex_file, const TreeNode *math_tree_node,
                                            const MathNodeOperator parent_operator);
+
+LatexFuncStatus LatexFormulaOriginalPrint (FILE *latex_file, const TreeNode *math_tree_node);
 
 LatexFuncStatus LatexExpressionPrint (FILE *latex_file,
                                       const TreeNode *math_tree_node,
@@ -60,5 +62,27 @@ LatexFuncStatus LatexSimplifyQuotationPrint (FILE *latex_file);
 LatexFuncStatus LatexSeriousQuotationPrint (FILE *latex_file);
 
 LatexFuncStatus LatexDerivativeQuotationPrint (FILE *latex_file);
+
+LatexFuncStatus LatexPictureBegin (FILE *latex_file);
+
+LatexFuncStatus LatexPictureEnd (FILE *latex_file);
+
+LatexFuncStatus LatexPlotDraw (FILE *latex_file, const TreeNode *math_node,
+                               const char *plot_name, const char *color);
+
+LatexFuncStatus LatexDumbFormulaPrint (FILE *latex_file, const TreeNode *math_node);
+
+LatexFuncStatus LatexUnaryOperatorArgPrint (FILE *latex_fie, const TreeNode *math_node);
+
+LatexFuncStatus LatexSectionPrint (FILE *latex_file, const size_t current_derivative);
+
+LatexFuncStatus LatexDerivativePlotDraw (FILE *latex_file, const Tree *derivative_tree,
+                                         const size_t current_derivative);
+
+LatexFuncStatus LatexFormulaAndTaylorPlotDraw (FILE *latex_file, const Tree *formula_tree,
+                                               const Tree *taylor_tree, const size_t current_derivative);
+
+LatexFuncStatus LatexFormulaAndTaylorDifferencePlotDraw (FILE *latex_file, const Tree *formula_tree,
+                                                         const Tree *taylor_tree);
 
 #endif

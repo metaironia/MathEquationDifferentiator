@@ -28,7 +28,8 @@ const char *LATEX_DERIVATIVE_QUOTATIONS[] = {
     "Производная этой херни:\n",
     "Возьмем derivative этого.\n",
     "Попробуем хлопнуть в ладоши.\n",
-    "Компьютер сейчас выключится!!!\n"
+    "Компьютер сейчас выключится!!!\n",
+    "Ну это пиздец.\n"
 };
 
 const int LATEX_DERIVATIVE_QUOTATION_NUMBER = sizeof (LATEX_DERIVATIVE_QUOTATIONS) /

@@ -4,6 +4,8 @@
 #include <time.h>
 #include <stdlib.h>
 
+#include "../differentiator_commands.h"
+
 #include "../tree/tree_func.h"
 #include "../tree/tree_log.h"
 
@@ -45,8 +47,7 @@ LatexFuncStatus LatexBegin (FILE* latex_file) {
                             "\\usepackage{cmap}\n"
                             "\\usepackage{mathtext}\n"
                             "\\usepackage[T2A]{fontenc}\n"
-                            "\\usepackage[utf8]{inputenc}\n"
-                            "\\usepackage[english,russian]{babel}\n"
+                            "\\usepackage{russ}\n"
                             "\\usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools}\n"
                             "\\usepackage{icomma}\n"
 
@@ -90,20 +91,6 @@ LatexFuncStatus LatexBegin (FILE* latex_file) {
 
                             "\\usepackage{hyperref}\n"
                             "\\usepackage[usenames,dvipsnames,svgnames,table,rgb]{xcolor}\n"
-                            "\\hypersetup{\n"
-                            "    unicode=true,\n"
-                            "    pdftitle={Заголовок},\n"
-                            "    pdfauthor={Автор},\n"
-                            "    pdfsubject={Тема},\n"
-                            "    pdfcreator={Создатель},\n"
-                            "    pdfproducer={Производитель},\n"
-                            "    pdfkeywords={keyword1} {key2} {key3},\n"
-                            "    colorlinks=true,\n"
-                            "    linkcolor=black,\n"
-                            "    citecolor=black,\n"
-                            "    filecolor=magenta,\n"
-                            "    urlcolor=cyan\n"
-                            "}\n"
 
                             "\\usepackage{csquotes}\n"
 
@@ -121,7 +108,9 @@ LatexFuncStatus LatexBegin (FILE* latex_file) {
                             "\\title{Главная дерьмина в моей жизни в \\LaTeX}\n"
                             "\\date{\\today}\n"
 
-                            "\\begin{document}\n");
+                            "\\begin{document}\n"
+                            "\\centering\n"
+                            "\\maketitle\n");
 
     return LATEX_FUNC_STATUS_OK;
 }
@@ -131,9 +120,9 @@ LatexFuncStatus LatexEnd (FILE *latex_file) {
     assert (latex_file);
 
     fprintf (latex_file,    "\\begin{thebibliography}{}\n"
-                            "\\bibitem{Arithmetica} Margin of a copy of Arithmetica --- Diophantus of Alexandria, Pierre de Fermat\n"
-                            "\\bibitem{Universe} Kak upravlat Vselennoi, ne privlekaya vnimaniya sanitarov --- Artem Bester\n"
-                            "\\bibitem{Ruses} History of ancient Ruses - professor Bagirov\n"
+                            "\\bibitem{Physics} Олимпиадный физический практикум --- Ю.А.Черников, И.В.Лукьянов\n"
+                            "\\bibitem{Arithmetica} Многочлены 6 --- С.В.Буфеев\n"
+                            "\\bibitem{Ruses} Руководство по эксплуатации микроволновки --- Л.Г.Самсунгов\n"
 
                             "\\end{thebibliography}\n"
 
@@ -204,9 +193,9 @@ LatexFuncStatus LatexFormulaNodeDataPrint (FILE *latex_file, const TreeNode *mat
 
     MathNodeOperator current_node_operator = (math_tree_node -> data -> nodeValue).mathOperator;
 
-    char before_expression[MAX_WORD_LENGTH]  = "";
-    char between_expression[MAX_WORD_LENGTH] = "";
-    char after_expression[MAX_WORD_LENGTH]   = "";
+    char before_expression[MAX_STRING_LENGTH]  = "";
+    char between_expression[MAX_STRING_LENGTH] = "";
+    char after_expression[MAX_STRING_LENGTH]   = "";
 
     LatexSetBeforeExpression (before_expression, current_node_operator, parent_node_operator);
 
@@ -271,14 +260,14 @@ LatexFuncStatus LatexSetBeforeExpression (char *before_expression,
         case OPERATOR_SUB:
             if (parent_node_operator == OPERATOR_MUL) {
 
-                strncpy (before_expression, "(", MAX_WORD_LENGTH);
+                strncpy (before_expression, "(", MAX_STRING_LENGTH);
                 break;
             }
         //fallthrough
         case OPERATOR_MUL:
         case OPERATOR_DIV:
             if (parent_node_operator == OPERATOR_POW)
-                strncpy (before_expression, "(", MAX_WORD_LENGTH);
+                strncpy (before_expression, "(", MAX_STRING_LENGTH);
 
             break;
 
@@ -301,14 +290,14 @@ LatexFuncStatus LatexSetAfterExpression (char *after_expression,
         case OPERATOR_SUB:
             if (parent_node_operator == OPERATOR_MUL) {
 
-                strncat (after_expression, ")", MAX_WORD_LENGTH);
+                strncat (after_expression, ")", MAX_STRING_LENGTH);
                 break;
             }
         //fallthrough
         case OPERATOR_MUL:
         case OPERATOR_DIV:
             if (parent_node_operator == OPERATOR_POW)
-                strncat (after_expression, ")", MAX_WORD_LENGTH);
+                strncat (after_expression, ")", MAX_STRING_LENGTH);
 
             break;
 
@@ -331,31 +320,42 @@ LatexFuncStatus LatexSetMainExpression (char *before_expression,
     switch (current_node_operator) {
 
         case OPERATOR_ADD:
-            strncpy (between_expression, "+", MAX_WORD_LENGTH);
+            strncpy (between_expression, "+", MAX_STRING_LENGTH);
             break;
 
         case OPERATOR_SUB:
-            strncpy (between_expression, "-", MAX_WORD_LENGTH);
+            strncpy (between_expression, "-", MAX_STRING_LENGTH);
             break;
 
         case OPERATOR_DIV:
-            strncat (before_expression,  "\\frac{", MAX_WORD_LENGTH / 2);
-            strncpy (between_expression, "}{",      MAX_WORD_LENGTH);
-            strncpy (after_expression,   "}",       MAX_WORD_LENGTH / 2);
+            strncat (before_expression,  "\\frac{", MAX_STRING_LENGTH / 2);
+            strncpy (between_expression, "}{",      MAX_STRING_LENGTH);
+            strncpy (after_expression,   "}",       MAX_STRING_LENGTH / 2);
             break;
 
         case OPERATOR_MUL:
-            strncpy (between_expression, "\\cdot", MAX_WORD_LENGTH);
+            strncpy (between_expression, " \\cdot ", MAX_STRING_LENGTH);
             break;
 
         case OPERATOR_POW:
-            strncat (between_expression, "^{", MAX_WORD_LENGTH / 2);
-            strncpy (after_expression,   "}",  MAX_WORD_LENGTH / 2);
+            strncat (before_expression,  "{",  MAX_STRING_LENGTH / 2);
+            strncat (between_expression, "^{", MAX_STRING_LENGTH / 2);
+            strncat (after_expression,   "}}",  MAX_STRING_LENGTH / 2);
             break;
 
         case OPERATOR_LN:
-            strncat (before_expression, "\\ln{", MAX_WORD_LENGTH / 2);
-            strncpy (after_expression,  "}",     MAX_WORD_LENGTH / 2);
+            strncat (before_expression, "\\ln{(", MAX_STRING_LENGTH / 2);
+            strncpy (after_expression,  ")}",     MAX_STRING_LENGTH / 2);
+            break;
+
+        case OPERATOR_COS:
+            strncat (before_expression, "\\cos{(", MAX_STRING_LENGTH / 2);
+            strncpy (after_expression,  ")}",     MAX_STRING_LENGTH / 2);
+            break;
+
+        case OPERATOR_SIN:
+            strncat (before_expression, "\\sin{(", MAX_STRING_LENGTH / 2);
+            strncpy (after_expression,  ")}",     MAX_STRING_LENGTH / 2);
             break;
 
         default:
@@ -429,45 +429,197 @@ LatexFuncStatus LatexDerivativeQuotationPrint (FILE *latex_file) {
     return LATEX_FUNC_STATUS_OK;
 }
 
-//LatexFuncStatus LatexPictureBegin (FILE *latex_file) {
-//
-//    assert (latex_file);
-//
-//    fprintf (latex_file, "\\begin{tikzpicture}\n"
-//                         "\\begin{axis}[\n"
-//                         "x=1.7cm,\n"
-//                         "y=0.26cm,\n"
-//                         "grid=both,\n"
-//                         "grid style={line width=.1pt, draw=gray!10},\n"
-//                         "major grid style={line width=.2pt,draw=gray!50},\n"
-//                         "axis lines=middle,\n"
-//                         "axis line style={line width = .7pt},\n"
-//                         "minor tick num=5,\n"
-//                         "xmin=-3,\n"
-//                         "xmax=3.9,\n"
-//                         "ymin=-36,\n"
-//                         "ymax=48,\n"
-//                         "xtick={-3,-2,...,4},\n"
-//                         "ytick={-35,-30,...,50},\n"
-//                         "x label style={at={(axis cs:(3.8,2.3)},anchor=north},\n"
-//                         "xlabel={\large $x$},\n"
-//                         "y label style={at={(axis cs:(0.2,48.4)},anchor=north},\n"
-//                         "ylabel={\large $y$},\n"
-//                         "clip mode=individual,\n"
-//                         "legend style={at={(axis cs:(3.86,44)}}\n"
-//                         "]\n");
-//
-//    return LATEX_FUNC_STATUS_OK;
-//}
-//
-//LatexFuncStatus LatexPictureEnd (FILE *latex_file) {
-//
-//    assert (latex_file);
-//
-//    fprintf (latex_file, "\\end{axis}\n"
-//                         "\\end{tikzpicture}\n"
-//                         "\\end{center}\n");
-//
-//    return LATEX_FUNC_STATUS_OK;
-//}
+LatexFuncStatus LatexPictureBegin (FILE *latex_file) {
 
+    assert (latex_file);
+
+    fprintf (latex_file, "\\begin{center}\n"
+                         "\\begin{tikzpicture}\n"
+                         "\\begin{axis}[\n"
+                         "x=4.8cm,\n"
+                         "y=0.2cm,\n"
+                         "grid=both,\n"
+                         "grid style={line width=.1pt, draw=gray!10},\n"
+                         "major grid style={line width=.2pt,draw=gray!50},\n"
+                         "axis lines=middle,\n"
+                         "axis line style={line width = .7pt},\n"
+                         "minor tick num=5,\n"
+                         "xmin=-1.5,\n"
+                         "xmax=1.3,\n"
+                         "ymin=-36,\n"
+                         "ymax=48,\n"
+                         "xtick={-1.5,-1,0,-0.5,0,0.5,1.0},\n"
+                         "ytick={-35,-30,...,45},\n"
+                         "x label style={at={(axis cs:(9.3,2.3)},anchor=north},\n"
+                         "xlabel={\\large $x$},\n"
+                         "y label style={at={(axis cs:(0.2,48.4)},anchor=north},\n"
+                         "ylabel={\\large $y$},\n"
+                         "clip mode=individual,\n"
+                         "legend style={at={(axis cs:(1,44)}},\n"
+                         "restrict y to domain=-36:48,"
+                         "]\n");
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexPictureEnd (FILE *latex_file) {
+
+    assert (latex_file);
+
+    fprintf (latex_file, "\\end{axis}\n"
+                         "\\end{tikzpicture}\n"
+                         "\\end{center}\n");
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexPlotDraw (FILE *latex_file, const TreeNode *math_node,
+                               const char *plot_name, const char *color) {
+
+    assert (latex_file);
+
+    fprintf (latex_file, "\\addplot[line width=0.5pt,smooth,samples=400,domain=-1.5:1.3, %s] plot (\\x, {",
+             color);
+
+    LatexDumbFormulaPrint (latex_file, math_node);
+
+    fprintf (latex_file, "});\n");
+
+    fprintf (latex_file, "\\addlegendentry[align=left]{%s};\n", plot_name);
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexDumbFormulaPrint (FILE *latex_file, const TreeNode *math_node) {
+
+    if (!math_node)
+        return LATEX_FUNC_STATUS_OK;
+
+    assert (latex_file);
+    MATH_TREE_NODE_VERIFY (math_node, LATEX);
+
+    fprintf (latex_file, "(");
+
+    switch (math_node -> data -> nodeType) {
+
+        case VARIABLE:
+            fprintf (latex_file, "\\");
+        //fallthrough
+        case NUMBER:
+        case BINARY_OPERATOR:
+            LatexDumbFormulaPrint (latex_file, math_node -> left_branch);
+            MathNodeTypePrint (latex_file, math_node);
+            LatexDumbFormulaPrint (latex_file, math_node -> right_branch);
+            break;
+
+        case UNARY_OPERATOR:
+            MathNodeTypePrint (latex_file, math_node);
+            LatexUnaryOperatorArgPrint (latex_file, math_node);
+            break;
+
+        case NODE_TYPE_ERROR:
+        default:
+            fprintf (stderr, "LATEX NODE TYPE ERROR\n");
+            return LATEX_FUNC_STATUS_FAIL;
+    }
+
+    fprintf (latex_file, ")");
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexUnaryOperatorArgPrint (FILE *latex_file, const TreeNode *math_node) {
+
+    assert (latex_file);
+
+    switch ((math_node -> data -> nodeValue).mathOperator) {
+
+        case OPERATOR_SIN:
+        case OPERATOR_COS:
+            fprintf (latex_file, "(deg");
+            LatexDumbFormulaPrint (latex_file, math_node -> left_branch);
+            fprintf (latex_file, ")");
+            break;
+
+        case OPERATOR_LN:
+            LatexDumbFormulaPrint (latex_file, math_node -> left_branch);
+            break;
+
+        default:
+            fprintf (stderr, "ERROR WHILE UNARY OPERATOR PRINT\n");
+            return LATEX_FUNC_STATUS_FAIL;
+    }
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexSectionPrint (FILE *latex_file, const size_t current_derivative) {
+
+    assert (latex_file);
+
+    fprintf (latex_file, "\\section{%zu derivative}\n", current_derivative);
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexDerivativePlotDraw (FILE *latex_file, const Tree *derivative_tree,
+                                         const size_t current_derivative) {
+
+    assert (latex_file);
+
+    char name_of_plot[MAX_STRING_LENGTH] = "";
+
+    snprintf (name_of_plot, MAX_STRING_LENGTH, "%zu derivative", current_derivative);
+
+    LatexPictureBegin (latex_file_output);
+    LatexPlotDraw     (latex_file_output, derivative_tree -> root, name_of_plot, "blue");
+    LatexPictureEnd   (latex_file_output);
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexFormulaAndTaylorPlotDraw (FILE *latex_file, const Tree *formula_tree,
+                                               const Tree *taylor_tree, const size_t current_derivative) {
+
+    assert (latex_file);
+
+    char name_of_plot[MAX_STRING_LENGTH] = "";
+
+    snprintf (name_of_plot, MAX_STRING_LENGTH, "taylor series $o(x^{%zu})$", current_derivative + 1);
+
+    LatexPictureBegin (latex_file_output);
+    LatexPlotDraw     (latex_file_output, formula_tree -> root, "initial expression", "blue");
+    LatexPlotDraw     (latex_file_output, taylor_tree -> root,  name_of_plot,         "red");
+    LatexPictureEnd   (latex_file_output);
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexFormulaAndTaylorDifferencePlotDraw (FILE *latex_file, const Tree *formula_tree,
+                                                         const Tree *taylor_tree) {
+
+    assert (latex_file);
+
+    TreeNode *difference_node = SUB_ (formula_tree -> root, taylor_tree -> root);
+
+    LatexPictureBegin (latex_file_output);
+    LatexPlotDraw     (latex_file_output, difference_node, "difference between initial and taylor", "blue");
+    LatexPictureEnd   (latex_file_output);
+
+    free (difference_node);
+
+    return LATEX_FUNC_STATUS_OK;
+}
+
+LatexFuncStatus LatexFormulaOriginalPrint (FILE *latex_file, const TreeNode *math_tree_node) {
+
+    assert (latex_file);
+
+    MATH_TREE_NODE_VERIFY (math_tree_node, LATEX);
+
+    fprintf (latex_file, "Исходное выражение:\n");
+
+    LatexFormulaCreate (latex_file, math_tree_node);
+
+    return LATEX_FUNC_STATUS_OK;
+}
