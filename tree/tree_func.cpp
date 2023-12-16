@@ -53,7 +53,7 @@ enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_bran
     return TREE_FUNC_STATUS_OK;
 }
 
-Tree *TreeCopy (const Tree *math_tree_for_copy, Tree *copy_of_math_tree, const size_t node_data_size) {
+Tree *TreeCopy (Tree *copy_of_math_tree, const Tree *math_tree_for_copy, const size_t node_data_size) {
 
     assert (math_tree_for_copy);
     assert (copy_of_math_tree);
@@ -152,113 +152,7 @@ enum TreeFuncStatus TreeNodeReplace (TreeNode *tree_node_for_replace, TreeNode *
 //    return TREE_FUNC_STATUS_OK;
 //}
 //
-//enum TreeFuncStatus TreeNodeRead (FILE *file_for_read_tree, TreeNode **tree_node_for_fill) {  //PREORDER
-//
-//    assert (file_for_read_tree);
-//
-//    char *buf = (char *) calloc (NODE_READ_BUF_SIZE, sizeof (char));
-//    assert (buf);
-//
-//    //HOW TO READ VARIABLE NUM OF SYMBOLS???
-//
-//    if (IsBracketInFileStr (file_for_read_tree, '(') == false) {
-//
-//        if (TreeNodeNilCheck (file_for_read_tree, buf) == TREE_FUNC_STATUS_OK)
-//            return TREE_FUNC_STATUS_OK;
-//        else
-//            return TREE_FUNC_STATUS_FAIL;
-//    }
-//
-//
-//    ON_TREE_DEBUG (printf ("( "));
-//
-//    *tree_node_for_fill = CreateTreeNode ();
-//
-//    TREE_NODE_VERIFY (*tree_node_for_fill);
-//
-//    if (TreeNodeDataRead (file_for_read_tree, *tree_node_for_fill, buf) == TREE_FUNC_STATUS_FAIL)
-//        return TREE_FUNC_STATUS_FAIL;
-//
-//    //recursion below
-//
-//    if (TreeNodeRead (file_for_read_tree, &((*tree_node_for_fill) -> left_branch)) == TREE_FUNC_STATUS_FAIL)
-//        return TREE_FUNC_STATUS_FAIL;
-//
-//    if (TreeNodeRead (file_for_read_tree, &((*tree_node_for_fill) -> right_branch)) == TREE_FUNC_STATUS_FAIL)
-//        return TREE_FUNC_STATUS_FAIL;
-//
-//    //ON_TREE_DEBUG (printf ("|read two nodes|"));
-//
-//    TREE_NODE_VERIFY (*tree_node_for_fill);
-//
-//    if (IsBracketInFileStr (file_for_read_tree, ')')) {
-//
-//        ON_TREE_DEBUG (printf (") "));
-//
-//        return TREE_FUNC_STATUS_OK;
-//    }
-//
-//    return TREE_FUNC_STATUS_FAIL;
-//}
-//
-//enum TreeFuncStatus TreeNodeNilCheck (FILE *file_for_node_nil_check, char *buffer_for_node_check) {
-//
-//    assert (file_for_node_nil_check);
-//    assert (buffer_for_node_check);
-//
-//    fscanf (file_for_node_nil_check, "%4s", buffer_for_node_check);
-//
-//    if (strcmp (buffer_for_node_check, NIL) == 0) {
-//
-//        ON_TREE_DEBUG (printf ("nil "));
-//
-//        return TREE_FUNC_STATUS_OK;
-//    }
-//
-//    ON_TREE_DEBUG (printf ("wtf"));
-//
-//    return TREE_FUNC_STATUS_FAIL;
-//}
 
-//enum TreeFuncStatus TreeNodeDataRead (FILE *file_for_read_node_data, TreeNode *tree_node_for_data_read,
-//                                      char *buffer_for_read_node_data) {
-//
-//    assert (file_for_read_node_data);
-//    assert (buffer_for_read_node_data);
-//
-//    TREE_NODE_VERIFY (tree_node_for_data_read);
-//
-//    TreeElem_t *tree_node_data = &(tree_node_for_data_read -> data);
-//
-//    if (IS_TREE_ELEM_PTR) {
-//
-//        if (fscanf (file_for_read_node_data, " \" %100[^\"]", buffer_for_read_node_data)) {  //TODO fix num of read symbols
-//
-//            #if IS_TREE_ELEM_PTR
-//                *tree_node_data = buffer_for_read_node_data;
-//
-//                fseek (file_for_read_node_data, 1, SEEK_CUR);      //TODO fgetchar
-//
-//            #endif
-//
-//            ON_TREE_DEBUG (printf("data "));
-//
-//            return TREE_FUNC_STATUS_OK;
-//        }
-//    }
-//
-//    else
-//        if (fscanf (file_for_read_node_data, TREE_DATA_FORMAT, tree_node_data)) {
-//
-//            ON_TREE_DEBUG (printf ("data "));
-//
-//            return TREE_FUNC_STATUS_OK;
-//        }
-//
-//    ON_TREE_DEBUG (printf ("wtf "));
-//
-//    return TREE_FUNC_STATUS_FAIL;
-//}
 
 //enum TreeFuncStatus TreeOutputToFile (FILE *file_for_output_tree, const Tree *tree_for_output) {   //TODO output
 //

@@ -121,7 +121,7 @@ enum TreeFuncStatus TreeNodeLeftBranchCreate (TreeNode *node_for_add_left_branch
 
 enum TreeFuncStatus TreeNodeRightBranchCreate (TreeNode *node_for_add_right_branch);
 
-Tree *TreeCopy (const Tree *math_tree_for_copy, Tree *copy_of_math_tree, const size_t node_data_size);
+Tree *TreeCopy (Tree *copy_of_math_tree, const Tree *math_tree_for_copy, const size_t node_data_size);
 
 TreeNode *TreeNodeCopy (TreeNode *copy_of_math_tree_node, const TreeNode *math_tree_node_for_copy,
                         const size_t node_data_size);
@@ -173,6 +173,8 @@ bool IsBracketInFileStr (FILE *file_to_check_str, const char bracket_type);
 unsigned int TreeVerify (const Tree *tree_for_verify, const char *name_parent_func);
 
 unsigned int TreeNodeVerify (const TreeNode *tree_node_for_verify);
+
+
 
 
 #endif
